@@ -91,209 +91,124 @@ The original plans had inverted priorities, focusing heavily on AI techniques (R
 
 ## Research Areas (POC-1)
 
-### Research Area 1: Process Model Design (2 weeks)
+### Research Area 1: Process Model Design And Context Management
 
-**Focus**: Define the Development Process Model centered on Context Consistency
+**Focus** : Define the Development Process Model centered on Context Consistency:
 
-**Activities**:
+ 1. Process structure (Value → Feature → Requirement → Task → Review → Delivery)
+ 2. How project context grows and evolves
+ 3. How to extract task-specific context
+ 4. How to keep context consistency throughout the development process
 
-1. **Process Structure Definition** (3 days)
-   - Map the full development cycle: Value → Feature → Requirement → Task → Review → Delivery
-   - Define what happens at each stage (inputs, outputs, artifacts, decisions)
-   - Identify transition points and criteria (gates, DoR/DoD)
-   - Define how stages interconnect and reference each other
+**Expectations**:
 
-2. **Context Requirements per Stage** (3 days)
-   - Value stage: Problem statement, user needs, success metrics, assumptions
-   - Feature stage: User-facing capability, acceptance criteria, design decisions, dependencies
-   - Requirement stage: Technical spec, constraints, test criteria, implementation notes
-   - Task stage: Scope, context pack, DoD, links to requirements/designs/tests
-   - Review stage: Changes, validation, context updates required
-   - Delivery stage: Release notes, documentation updates, lessons learned
+1. Use cases and scenarios
+2. Problem introduction, scope definition
+3. Process model decomposition, terminology, classifications
+   - Process entry and exit points
+   - Stages and transitions
+   - Cycles and iterations
+   - Entity definitions (Product, Value, Feature, Requirement, Task, Review, Delivery)
+   - Work (task) kinds, roles, cycle stages, cycle workflows, task types.
+4. Process model composition.
+   - Entities interconnectivity
+   - Meaning threads across entities
+   - Process progression
+   - Context as backbone of process
+5. Context model decomposition
+   - Process context and its parts and role
+   - Task context and its parts and role
+6. Context model composition
+   - Process and task context interaction
+   - Process context evolution patterns
+   - Task context extraction patterns
+   - Context consistency mechanisms
 
-3. **Interconnection Model** (3 days)
-   - Define bidirectional linking strategies (Task ↔ Requirement ↔ Feature ↔ Value)
-   - Code references to context (requirements, decisions, designs)
-   - Design patterns for maintaining link integrity
-   - Examples of interconnected context
+**Deliverables**:
 
-4. **Workflow Design** (3 days)
-   - Standard workflows (new feature, bug fix, refactor, spike)
-   - Context evolution patterns through workflows
-   - Manual vs. automatable steps
-   - Flexibility mechanisms (allow deviations while making right actions easy)
-
-**Deliverable**: `rnd/research/2-feasibility/POC_1/process-model.md`
-
-**Contents**:
-- Process model diagram with all stages
-- Stage definitions (inputs, outputs, artifacts, context requirements)
-- Transition rules and gates
-- Interconnection model and linking strategies
-- Example workflows with context evolution
-- Automation opportunities identified
-
----
-
-### Research Area 2: Context Evolution Model (1.5 weeks)
-
-**Focus**: Define how project context grows and evolves while maintaining consistency
+`rnd/research/2-feasibility/POC_1/process-model.md`
+`rnd/research/2-feasibility/POC_1/process-model/*`
 
 **Activities**:
 
-1. **Context Taxonomy** (2 days)
-   - Foundation context (vision, values, goals, principles)
-   - Analytical context (requirements, user stories, acceptance criteria)
-   - Design context (architecture, technical decisions, patterns, standards)
-   - Implementation context (code organization, module structure, API docs)
-   - Validation context (test plans, test cases, quality metrics)
-   - Delivery context (deployment plans, environments, configurations)
-   - Progress context (task history, status, coverage, blockers)
+TODO
 
-2. **Evolution Patterns** (2 days)
-   - Context birth: From idea to structured foundation
-   - Context growth: As development progresses (design → code → tests)
-   - Context refinement: Updates from reviews and discoveries
-   - Context maintenance: Keeping information current and relevant
-   - Context archival: Handling deprecated or obsolete information
+### Research Area 2: Data Model & File Structure
 
-3. **Consistency Mechanisms** (3 days)
-   - Link integrity rules (broken link detection, updates)
-   - Context update triggers (task completion, code commits, reviews)
-   - Validation patterns (completeness checks, staleness detection)
-   - Manual review points (where humans must validate context)
-   - Version control integration (context changes in commits)
+**Focus**: Design file-based, Git-friendly data model for process and context representation.
 
-**Deliverable**: `rnd/research/2-feasibility/POC_1/context-evolution-model.md`
+**Expectations**:
 
-**Contents**:
-- Context taxonomy with examples
-- Context lifecycle (birth → growth → maintenance → archival)
-- Evolution patterns and triggers
-- Consistency rules and validation mechanisms
-- Integration with process model
-- Manual vs. automated maintenance
-
----
-
-### Research Area 3: Context Extraction for Tasks (1.5 weeks)
-
-**Focus**: Design practical methods for preparing task context from project context
-
-**Activities**:
-
-1. **Context Sufficiency Criteria** (2 days)
-   - Define "concise, complete, up-to-date" for different task types
-   - Bug fix context needs vs. new feature context needs
-   - Refactoring context needs vs. documentation task needs
-   - Balance between too little and too much context
-
-2. **Extraction Methods** (3 days)
-   - Manual extraction: Templates and checklists
-   - Semi-automated extraction: Link following and aggregation
-   - Heuristic methods: Based on task type, tags, area
-   - Validation: How to verify extracted context is sufficient
-   - User control: Preview, edit, approve extracted context
-
-3. **Prototype Simple Extraction** (4 days)
-   - Script to extract context by following links from task
-   - Gather referenced requirements, designs, related code areas
-   - Format for human review (markdown)
-   - Format for AI assistance (structured, with token budget awareness)
-   - Test on 2-3 real task scenarios
-
-**Deliverable**: `rnd/research/2-feasibility/POC_1/context-extraction-model.md`
-
-**Contents**:
-- Context sufficiency criteria per task type
-- Extraction methods (manual, semi-automated, heuristic)
-- User control mechanisms
-- Prototype extraction script and examples
-- Evaluation of extraction quality
-- Token budget considerations (for future AI use)
-
----
-
-### Research Area 4: Data Model & File Structure (1.5 weeks)
-
-**Focus**: Design file-based, Git-friendly data model for process and context
-
-**Activities**:
-
-1. **Entity Design** (2 days)
-   - Define entities: Project, Value, Feature, Requirement, Task, Decision, Design
-   - Define properties for each entity (ID, title, description, status, links, metadata)
-   - Define states and state transitions
-   - Define relationship types (parent-child, references, dependencies)
-
-2. **File Structure Design** (3 days)
-   - Directory layout (`.glow/` vs. `glow/` - choose visible for transparency)
-   - File naming conventions (IDs, slugs, dates)
-   - File format (Markdown with YAML frontmatter)
-   - Link representation (IDs in frontmatter, markdown links in body)
-   - Code reference format (file:line, symbol anchors)
-   - Index files for navigation (optional)
-
-3. **Git Integration** (2 days)
+1. Entity Data Design
+   - Entity definitions with schemas
+   - Entity relationship diagram
+2. File Structure Design
+   - Complete file structure specification
+      - Directory layout (`.glow/` vs. `glow/` - choose visible for transparency)
+      - File naming conventions (IDs, slugs, dates)
+      - File format (Markdown with YAML frontmatter)
+      - Link representation (IDs in frontmatter, markdown links in body)
+      - Code reference format (file:line, symbol anchors)
+      - Index files for navigation (optional)
+   - File format examples (with real content)
+3. Git Integration
    - How changes appear in diffs (readable, meaningful)
    - Merge conflict handling (file-per-entity helps)
    - Commit message conventions (reference entity IDs)
    - Branch strategies (feature branches, context updates)
+4. Pros/Cons Analysis
 
-**Deliverable**: `rnd/research/2-feasibility/POC_1/data-model.md`
+**Deliverables**:
 
-**Contents**:
-- Entity definitions with schemas
-- Entity relationship diagram
-- Complete file structure specification
-- File format examples (with real content)
-- Git integration patterns
-- Pros/cons analysis of design choices
-
----
-
-### Research Area 5: Light AI Assistance Integration (1 week)
-
-**Focus**: Define integration points for existing AI tools (Copilot, MCP)
+`rnd/research/2-feasibility/POC_1/data-model.md`
+`rnd/research/2-feasibility/POC_1/data-model/*`
 
 **Activities**:
 
-1. **Copilot Integration Use Cases** (2 days)
-   - Code generation with context references
-   - Documentation generation from context
-   - Test generation based on requirements
-   - Code review assistance with context awareness
+TODO
 
-2. **MCP (Model Context Protocol) Integration** (3 days)
+### Research Area 3: Light AI Assistance Integration
+
+**Focus**: Define integration points for existing AI tools (Copilot, MCP)
+
+**Expectations**:
+
+1. Copilot Integration Use Cases
+   - instructions generation
+   - prompt context generation
+   - tasks for AI agents (simple task delegation)
+   - task execution cycles
+   - task results review, human-AI, AI-human, cross-model-AI reviews
+   - context consistency checks
+   - context maintenance tasks
+
+2. MCP (Model Context Protocol) Integration
    - MCP server design for dev-glow
    - Expose project context to MCP clients
    - Context retrieval operations
    - Task and requirement operations
    - Integration examples with VS Code, other tools
 
-3. **Context Preparation for AI** (2 days)
+3. Context Preparation for AI
    - Format context for AI consumption (structured, token-aware)
    - Token budget management (avoid overwhelming AI)
    - Progressive context disclosure (start small, expand as needed)
    - User control over AI context exposure
 
-**Deliverable**: `rnd/research/2-feasibility/POC_1/light-ai-integration.md`
+**Deliverables**:
 
-**Contents**:
-- Copilot integration patterns and examples
-- MCP server specification
-- Context formatting for AI tools
-- Token budget strategies
-- User control mechanisms
-- Cost estimates (basic)
+`rnd/research/2-feasibility/POC_1/light-ai-integration.md`
+`rnd/research/2-feasibility/POC_1/light-ai-integration/*`
 
----
+**Activities**:
 
-### Research Area 6: CLI and MCP Tools Design (1 week)
+TODO
+
+### Research Area 4: CLI and MCP Tools Design (1 week)
 
 **Focus**: Design command-line and MCP interfaces for the system
 
-**Activities**:
+**Expectations**:
 
 1. **CLI Command Design** (3 days)
    - Project initialization: `glow init`
@@ -315,245 +230,21 @@ The original plans had inverted priorities, focusing heavily on AI techniques (R
    - Error messages and guidance
    - Dry-run and confirmation patterns
 
-**Deliverable**: `rnd/research/2-feasibility/POC_1/cli-mcp-design.md`
+**Deliverables**:
 
-**Contents**:
-- Complete CLI command reference
-- Command examples and workflows
-- MCP tool specifications
-- UX guidelines and principles
-- User journey examples
+`rnd/research/2-feasibility/POC_1/cli-mcp-design.md`
+`rnd/research/2-feasibility/POC_1/cli-mcp-design/*`
 
----
+**Activities**:
 
-## MVP Scope (POC-1)
-
-### Must-Have Features
-
-1. **Project Initialization**
-   - `glow init` creates file structure
-   - Template generation for all entity types
-   - Configuration setup
-
-2. **Entity Management**
-   - Create, list, view, edit entities (Value, Feature, Requirement, Task)
-   - Link entities (parent-child, references)
-   - Status management (todo, in-progress, done, blocked)
-
-3. **Context Operations**
-   - Extract context for a task (follow links, gather references)
-   - View assembled context
-   - Update context on task completion
-
-4. **Basic Automation**
-   - Status updates from Git commits (parse commit messages)
-   - Broken link detection
-   - Stale context warnings
-
-5. **MCP Server**
-   - Basic MCP server exposing project context
-   - Context retrieval operations
-   - Entity CRUD operations
-
-### Nice-to-Have (POC-1)
-
-- Simple web viewer for project context
-- Git hooks for automatic context updates
-- Context templates per task type
-
-### Deferred to POC-2
-
-- Advanced AI assistance (task breakdown, automated planning)
-- AI-powered context extraction (embeddings, RAG)
-- LLM cost optimization
-- AI agents
-- Deep integrations with external tools (Jira, GitLab)
-
----
-
-## Timeline (6 weeks)
-
-### Week 1: Process Model
-- Days 1-3: Process structure definition
-- Days 4-5: Context requirements per stage
-
-### Week 2: Process Model & Context Evolution
-- Days 1-2: Interconnection model
-- Days 3-5: Context taxonomy and evolution patterns
-
-### Week 3: Context Evolution & Extraction
-- Days 1-2: Consistency mechanisms
-- Days 3-5: Context extraction methods and sufficiency
-
-### Week 4: Context Extraction & Data Model
-- Days 1-2: Prototype extraction
-- Days 3-5: Entity design and file structure
-
-### Week 5: Data Model & Light AI Integration
-- Days 1-2: Git integration patterns
-- Days 3-5: Copilot and MCP integration design
-
-### Week 6: CLI/MCP Design & Documentation
-- Days 1-3: CLI command design
-- Days 4-5: Final documentation and synthesis
-
----
+TODO
 
 ## Deliverables Summary
 
-All deliverables in `rnd/research/2-feasibility/POC_1/`:
-
-1. **`process-model.md`** - Development Process Model with context consistency focus
-2. **`context-evolution-model.md`** - How context grows and stays consistent
-3. **`context-extraction-model.md`** - Preparing task context from project context
-4. **`data-model.md`** - File-based data structures and Git integration
-5. **`light-ai-integration.md`** - Copilot and MCP integration patterns
-6. **`cli-mcp-design.md`** - Command-line and MCP tool specifications
-7. **`POC-1-summary.md`** - Synthesis and recommendations for implementation
-
----
 
 ## Success Criteria
 
-### Process Model
-- ✅ Clear definition of all development stages and transitions
-- ✅ Context requirements specified for each stage
-- ✅ Interconnection patterns are practical and maintainable
-- ✅ Workflows cover common scenarios (feature, bug, refactor)
-
-### Context Evolution
-- ✅ Context taxonomy is comprehensive yet practical
-- ✅ Evolution patterns are well-defined with triggers
-- ✅ Consistency mechanisms are enforceable
-- ✅ Manual vs. automated boundaries are clear
-
-### Context Extraction
-- ✅ Extraction methods work for common task types
-- ✅ Prototype demonstrates feasibility
-- ✅ User control mechanisms are specified
-- ✅ Context sufficiency is measurable
-
-### Data Model
-- ✅ File-based model is Git-friendly (readable diffs, merge-able)
-- ✅ Entity relationships are clearly represented
-- ✅ Examples demonstrate practical use
-- ✅ Scalability to medium projects (100+ tasks)
-
-### Light AI Integration
-- ✅ Integration points with Copilot are identified
-- ✅ MCP server specification is complete
-- ✅ Context formatting for AI is practical
-- ✅ Cost estimates are reasonable (< $5/user/month)
-
-### CLI/MCP Tools
-- ✅ Command set covers all essential operations
-- ✅ UX is developer-friendly (low friction)
-- ✅ Examples demonstrate complete workflows
-- ✅ MCP tools are well-specified
-
----
 
 ## Risk Assessment
 
-### Process Risks
-
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|------------|
-| **Process too rigid** | Medium | High | Design flexibility mechanisms; make right actions easy |
-| **Process too loose** | Low | Medium | Define clear gates and validation points |
-| **Context overhead too high** | Medium | High | Focus on sufficiency not completeness; automate maintenance |
-| **Developers won't adopt** | Medium | High | CLI-first, Git-native, minimal setup; clear value demo |
-
-### Technical Risks
-
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|------------|
-| **File-based storage has conflicts** | Low | Medium | One file per entity; meaningful diffs |
-| **Link maintenance too manual** | Medium | Medium | Automated link checking; clear link patterns |
-| **Context extraction too complex** | Low | Medium | Start with simple link-following; iterate |
-| **Git integration issues** | Low | Low | Follow Git best practices; test thoroughly |
-
-### Scope Risks
-
-| Risk | Probability | Impact | Mitigation |
-|------|-------------|--------|------------|
-| **Scope creep to AI features** | High | High | Strict separation: POC-1 vs POC-2; defer AI to POC-2 |
-| **Over-engineering** | Medium | Medium | Focus on MVP; document future extensions |
-| **Under-specification** | Low | High | Detailed examples; prototype key concepts |
-
----
-
 ## Alignment with Original Vision
-
-This revised plan directly addresses the original vision:
-
-### Primary Focus: Development Process Management
-- ✅ Process model centered on context consistency
-- ✅ Context evolution as the backbone
-- ✅ File-based, Git-friendly approach
-- ✅ CLI-first tools
-
-### Secondary Focus: Light AI Assistance
-- ✅ Integration with existing tools (Copilot, MCP)
-- ✅ Context prepared for AI consumption
-- ✅ No complex AI techniques in POC-1
-
-### Deferred: Advanced AI
-- ✅ AI agents deferred to POC-2
-- ✅ RAG and embeddings deferred to POC-2
-- ✅ LLM optimization deferred to POC-2
-- ✅ Cost optimization deferred to POC-2
-
-### Key Principles Honored
-- Context consistency is the goal, not AI features
-- Process drives context, context enables AI
-- Human control and oversight throughout
-- Local-first, Git-native, developer-friendly
-- Lightweight and practical
-
----
-
-## Next Steps After POC-1
-
-If POC-1 is successful, proceed to:
-
-### POC-2: Advanced AI Integration
-- AI-powered task breakdown
-- AI-assisted context extraction (embeddings, RAG)
-- AI agents for routine tasks
-- LLM cost optimization
-- Advanced AI workflows
-
-### High-Level Architecture
-- Complete architecture design
-- Technology stack finalization
-- Performance and scalability planning
-- Security and privacy design
-
-### MVP Implementation
-- Implement POC-1 design
-- Build CLI tools
-- Build MCP server
-- Alpha testing with early users
-
----
-
-## Conclusion
-
-This revised plan refocuses Phase 2 on the core vision: **Development Process Management from Context Consistency perspective**. AI assistance is positioned correctly as an enabler integrated through light integration (Copilot, MCP) rather than as the primary research focus.
-
-The plan delivers:
-- ✅ Clear process model centered on context
-- ✅ Practical context evolution and extraction methods
-- ✅ Git-friendly file-based data model
-- ✅ Developer-friendly CLI and MCP tools
-- ✅ Foundation for future advanced AI integration (POC-2)
-
-**Confidence**: 9/10 - This plan is well-aligned with the original vision and feedback from Phase 1 while being practical and achievable.
-
----
-
-**Status**: 🚀 Ready to Begin  
-**Next Action**: Set up research workspace and begin Process Model Design (Week 1)
-
----
