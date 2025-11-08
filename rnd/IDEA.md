@@ -4,7 +4,7 @@ Software development process management (SDPM) is the process of overseeing and 
 
 ## Existing solutions
 
-There must be ton of existing solutions for this. One popular example is [Jira](https://www.atlassian.com/software/jira). 
+There must be ton of existing solutions for this. One popular example is [Jira](https://www.atlassian.com/software/jira).
 However, my personal needs as a developer trying to make my own product in the context of my feeling of zeitgeist are not adequately served by solutions i know of.
 
 ## Context
