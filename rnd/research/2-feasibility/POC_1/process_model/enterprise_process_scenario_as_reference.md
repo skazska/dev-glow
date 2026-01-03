@@ -1,10 +1,10 @@
 # Enterprise Process Scenario as Reference
 
-This document outlines the ideal process scenario of product development. It defines the expected outcomes, results, and activities for each phase of the development process, from initial idea to delivery with quality control.
+This document outlines the **ideal process scenario** of product development as a **reference benchmark**. It defines expected outcomes, results, and activities for each phase of the development process, from initial idea to delivery with quality control, in a fully-resourced enterprise context.
 
-It's aim is to describe a comprehensive and structured approach to software development that ensures alignment with product vision, goals, and requirements while maintaining high standards of quality
+**This scenario is presented for comparative analysis only**—to understand what comprehensive process maturity looks like. It is **not a prescriptive roadmap** for implementation, nor does it suggest that all elements must be reproduced. Rather, it serves as a **baseline** against which actual "as-is" processes (described in solo and small-team contexts) can be evaluated to identify specific improvement opportunities.
 
-This is To be used as example of heavyweight model example contrasting current "as is" processes described [here](./solo_dev_scenarios_as_is_analysis.md) and [here](./small_team_scenarios_as_is_analysis.md)   for evaluating approaches and tools that can help achieve results of this ideal process results but with lightweight and resouce efficient means by solo developers and small teams.
+This document is designed as a heavyweight model example contrasting current "as is" processes described [here](./solo_dev_scenarios_as_is_analysis.md) and [here](./small_team_scenarios_as_is_analysis.md), enabling evaluation of which approaches and tools can help achieve similar outcomes with lightweight and resource-efficient means for solo developers and small teams.
 
 > In the scope of this project, we suppose quality includes all aspects of the product, including but not limited to functionality, performance, security, usability, maintainability, traceability, scalability, and compatibility and user experience.
 
@@ -135,7 +135,6 @@ Expected Outcomes:
    - Deployment
    - Maintenance
 8. Smoke-tested critical design decisions through research, prototyping, and POC if necessary.
-product  
 9. Defined technology Evolution and Change Management strategies.
 
 Expected Results.
@@ -344,17 +343,3 @@ Release Loop includes iterative cycles of deployment, delivery increment testing
 #### Delivery
 
 Delivery includes delivery and deployment of the product, gathering feedback, support, maintenance, hot-fix delivery.
-
-## Solo-Developer Small-Team Modes Differences
-
-### Solo-Developer Modes
-
-In Self-Employed mode, a solo developer works independently on their own product. They bear all responsibilities, risks, and rewards. The primary challenges revolve around managing all aspects of the project alone, from ideation to deployment.
-
-In Employed mode, a solo developer works within a larger organization or team. They may in some cases have access to employer-provided resources, tools, and support. The primary challenges involve aligning with organizational goals, processes, and collaboration with other team members.
-
-### Small-Team Modes
-
-in Startup mode, a small team (e.g., 2-5 people) works on their own product. They share the vision, risks, and rewards. The primary challenges shift from *doing* the work to *coordinating* the work and maintaining a *shared understanding*.
-
-in Outsourced mode, a small team (e.g., 2-5 people) works on a product for an external client. They must balance the client's requirements, expectations, and communication with their own internal processes and collaboration. The primary challenges involve managing client relationships, scope changes, and delivering value within constraints.

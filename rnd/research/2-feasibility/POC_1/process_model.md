@@ -33,7 +33,12 @@ From a solo developer's perspective, product quality is the subjective feeling o
 #### Solo Scenarios
 
 [process model scenarios as is](process_model/solo_dev_scenarios_as_is_analysis.md)
-[process model scenarios to be](process_model/solo_dev_scenarios_to_be_vision.md)
+
+#### Solo Developer Challenges
+
+In Self-Employed mode, a solo developer works independently on their own product. They bear all responsibilities, risks, and rewards. The primary challenges revolve around managing all aspects of the project alone, from ideation to deployment.
+
+In Employed mode, a solo developer works within a larger organization or team. They may in some cases have access to employer-provided resources, tools, and support. The primary challenges involve aligning with organizational goals, processes, and collaboration with other team members.
 
 ### Small Team Development
 
@@ -61,7 +66,12 @@ Unlike solo development, instead of one developer's feeling, there might be diff
 #### Scenarios
 
 [process model scenarios table](process_model/small_team_scenarios_as_is_analysis.md)
-[process model scenarios to be](process_model/small_team_scenarios_to_be_vision.md)
+
+### Small Team Challenges
+
+in Startup mode, a small team (e.g., 2-5 people) works on their own product. They share the vision, risks, and rewards. The primary challenges shift from *doing* the work to *coordinating* the work and maintaining a *shared understanding*.
+
+in Outsourced mode, a small team (e.g., 2-5 people) works on a product for an external client. They must balance the client's requirements, expectations, and communication with their own internal processes and collaboration. The primary challenges involve managing client relationships, scope changes, and delivering value within constraints.
 
 ### Open Collaborations
 
@@ -97,7 +107,33 @@ Quality from the project's perspective is measured by its health and sustainabil
 
 #### Open Collaboration Scenarios
 
-[process model scenarios table](process_model/open_collab_scenarios.md) - TODO
+<!-- TODO: [process model scenarios table](process_model/open_collab_scenarios.md) - TODO -->
+
+#### Open Collaboration Challenges
+
+
+
+### Enterprise Process Scenario Reference
+
+#### Enterprise Work Modes
+
+- In-house development
+- Dedicated teams
+- Hybrid models
+
+#### Enterprise Work Costs Clarification
+
+In enterprise settings, work costs encompass not only direct labor costs but also infrastructure, tooling, compliance, training, and overhead associated with larger organizational structures.
+
+#### Enterprise Product Quality Clarification
+
+In enterprises, product quality is often measured against formal standards and benchmarks, including regulatory compliance, performance metrics, user satisfaction scores, and market competitiveness.
+
+#### Enterprise Scenarios
+
+[process model scenarios as reference](./process_model/enterprise_process_scenario_as_reference.md))
+
+#### Enterprise Challenges
 
 ## Problem Introduction
 
@@ -139,16 +175,102 @@ In the context of software development processes, several limiting factors can r
     - Poor defect tracking and resolution processes.
     - Inadequate code reviews and peer feedback mechanisms.
 
-### Solo Developer Challenges
 
-### Small Team Challenges
 
-## Process Model Decomposition
 
-## Process Model Composition
 
-## Context Model Decomposition
 
-## Context Model Composition
+## Expected Scenatios inference.
 
-## Conclusion
+Provided enterprise scenarios are not suitble for small teams and solo developers due to their complexity, resource intensiveness, and costliness, but are quality-focused and progress-forcing.
+
+Small teams and solo developers can-not afford the overhead of enterprise processes, in contrary ideal solution would be an absence of process at all, but that leads to low quality and progress issues.
+
+So a golden middle is required.
+
+**From cost, resource, and complexity th solution lies in**:
+
+1. process configurability and adaptability to different team sizes, project types, and contexts.
+2. Usage simplicity and actions reasomnability to minimize learning curve and cognitive load.
+3. AI-driven automation and augmentation to reduce manual effort and overhead.
+
+**From quality and progress perspective the solution lies in**:
+
+1. Clear and concise process guidance and best practices tailored for small teams and solo developers. (configuration templates?)
+2. Context awareness and semantic connection across all development phases and artifacts.
+3. AI-driven quality assurance and continuous improvement mechanisms.
+
+### Process configurability and adaptability
+
+Process is a cycle.
+Cycle iteration is a set of steps.
+Step can be atomic or be a process itself.
+Set of steps can be linked by precedence, dependency, or other relations.
+Step links can be strong (precedence, dependency) or weak (relations which does-not restrict execution).
+Strong links define process structure and can only refer steps within the same process iteration.
+Steps of iteration can not form closed loops, if they do - they are sub-process.
+Links can be conditional, defining different paths through the process based on context or outcomes of previous steps.
+
+These allow to build a process tree for any desirable complexity level.
+
+Step features:
+
+1. Classification: steps must be classifiable.
+2. Configuration: step characteristics must be configurable.
+   - characteristics: e.g.: id, name, description, estimates, metrics, etc.
+   - parameters: inputs, outputs, attributes
+   - context structure
+   - process structure (for process steps):
+
+Links features:
+
+1. Classification: links must be classifiable.
+2. Configuration: link characteristics must be configurable.
+   - characteristics: id, name, description, type, condition, isDependecy, isPrecedency, etc...
+
+Step paramenters features:
+
+1. Classification: parameters must be classifiable.
+2. Configuration: parameter characteristics must be configurable.
+   - characteristics: id, name, description, type, validators
+
+Step parameter validators features:
+
+1. Parameter type: validators must be type-specific.
+2. Validator types: validators must support different validation types (e.g., range, format, size, mime-type, regex).
+
+### AI-driven automation and augmentation
+
+TODO
+
+### Usage simplicity and actions reasomnability
+
+TODO
+
+### Template-based process configuration
+
+TODO
+
+### Context maintenance and semantic connection
+
+Context is like a call stack in javascript.
+For each step execution a context frame is created in the context stack.
+
+Frame contains:
+
+1. Step parameters (inputs, outputs, attributes)
+2. Step metadata (id, name, description, type, timestamps, etc.)
+3. Additional step artifacts.
+
+When a step is executed, it can access its own frame and all previous frames in the stack.
+
+This allows steps to maintain context and semantic connections across different phases and artifacts of the development process.
+
+#### Context quality
+
+Context quality assessment can be approached in terms of:
+
+1. is context complete? (complete, missing, not enough)
+2. is context consistent? (consistent, inconsistent, contradictory)
+3. is context solid? (solid, weak, fragmented)
+
