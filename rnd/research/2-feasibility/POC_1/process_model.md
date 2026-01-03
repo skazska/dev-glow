@@ -107,11 +107,28 @@ Quality from the project's perspective is measured by its health and sustainabil
 
 #### Open Collaboration Scenarios
 
-<!-- TODO: [process model scenarios table](process_model/open_collab_scenarios.md) - TODO -->
+- **Core Maintainer Scenario:**
+  - A small group of maintainers manages the project direction, reviews contributions, and ensures release quality.
+  - *Challenge:* Balancing own development work with community management and review burden.
+  - *Assistance:* AI-driven triage, automated code review, toxicity detection in comments.
+
+- **Casual Contributor Scenario:**
+  - An individual contributes a fix or feature to a project they use.
+  - *Challenge:* Understanding the codebase, setting up the environment, adhering to contribution guidelines.
+  - *Assistance:* Automated onboarding, "good first issue" identification, devcontainer configurations.
+
+- **Corporate-Backed Open Source:**
+  - A company releases a project as open source but retains control.
+  - *Challenge:* Balancing community interests with corporate roadmap.
+  - *Assistance:* Roadmap visualization, feedback aggregation and sentiment analysis.
 
 #### Open Collaboration Challenges
 
-
+- **Governance and Decision Making:** Reaching consensus in a diverse community can be slow and contentious.
+- **Quality Control:** Ensuring contributions from unknown sources meet project standards without discouraging contributors.
+- **Sustainability and Burnout:** Maintainers often work unpaid and face high demands, leading to burnout.
+- **Security and Trust:** Preventing malicious code injection and managing supply chain risks.
+- **Fragmented Communication:** Discussions happen across issues, PRs, chats, and forums, making it hard to track decisions.
 
 ### Enterprise Process Scenario Reference
 
@@ -175,14 +192,9 @@ In the context of software development processes, several limiting factors can r
     - Poor defect tracking and resolution processes.
     - Inadequate code reviews and peer feedback mechanisms.
 
+## Expected scenarios inference
 
-
-
-
-
-## Expected Scenatios inference.
-
-Provided enterprise scenarios are not suitble for small teams and solo developers due to their complexity, resource intensiveness, and costliness, but are quality-focused and progress-forcing.
+Provided enterprise scenarios are not suitable for small teams and solo developers due to their complexity, resource intensiveness, and costliness, but are quality-focused and progress-forcing.
 
 Small teams and solo developers can-not afford the overhead of enterprise processes, in contrary ideal solution would be an absence of process at all, but that leads to low quality and progress issues.
 
@@ -241,15 +253,40 @@ Step parameter validators features:
 
 ### AI-driven automation and augmentation
 
-TODO
+AI agents can act as virtual team members, handling repetitive or cognitive-heavy tasks to reduce the burden on human developers.
 
-### Usage simplicity and actions reasomnability
+- **Generative Tasks:**
+  - **Code Generation:** Boilerplate, unit tests, documentation comments.
+  - **Content Generation:** Release notes, changelogs, user documentation, marketing copy.
+- **Analytical Tasks:**
+  - **Code Review:** Detecting bugs, security vulnerabilities, and style violations.
+  - **Requirement Analysis:** Identifying ambiguities, conflicts, and missing details.
+  - **Root Cause Analysis:** Analyzing logs and stack traces to pinpoint issues.
+- **Process Management:**
+  - **Task Management:** Breaking down features into tasks, estimating effort, and suggesting assignments.
+  - **Context Management:** Summarizing discussions, linking related artifacts, and maintaining a semantic knowledge base.
 
-TODO
+### Usage simplicity and reasonableness of actions
+
+To ensure the process is an enabler rather than a blocker, it must be designed with the user's cognitive load in mind.
+
+- **Minimal Friction:** Process steps should be automated where possible. Manual inputs should be requested only when necessary and should be brief.
+- **Just-in-Time Guidance:** Instructions and requirements should be presented exactly when they are needed, not in a massive upfront manual.
+- **Reasonable Defaults:** The system should provide sensible defaults for all configurations, allowing users to start immediately and customize later.
+- **Actionable Feedback:** When a process step fails or a standard is not met, the system should provide clear, actionable advice on how to fix it, rather than just an error message.
+- **Progressive Disclosure:** The process should start simple and reveal complexity only as the project grows or specific needs arise.
 
 ### Template-based process configuration
 
-TODO
+To cater to different project types and team sizes without overwhelming configuration, the system should use a template-based approach.
+
+- **Pre-defined Templates:**
+  - **Solo MVP:** Minimal process, focus on speed, basic CI/CD.
+  - **Small Team Agile:** Scrum/Kanban basics, code review enforcement, automated testing.
+  - **High Assurance:** Strict quality gates, comprehensive documentation, security scanning (for regulated domains).
+- **Composition:** Templates can be composed of "Process Modules" (e.g., "GitHub Flow Module", "Release Notes Module").
+- **Customization:** Users can override specific parameters or swap out modules within a template.
+- **Evolution:** A project can switch templates (e.g., from Solo MVP to Small Team Agile) as it matures, with the system handling the migration of process artifacts.
 
 ### Context maintenance and semantic connection
 
@@ -273,4 +310,3 @@ Context quality assessment can be approached in terms of:
 1. is context complete? (complete, missing, not enough)
 2. is context consistent? (consistent, inconsistent, contradictory)
 3. is context solid? (solid, weak, fragmented)
-
