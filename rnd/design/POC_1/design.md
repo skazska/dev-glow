@@ -31,7 +31,8 @@ The system follows a "Local-First" and "Git-Friendly" approach. All data (includ
 
 * `.glow/`: Configuration and definitions.
   * `config.yaml`: General settings (project name, glow config version, data folder, ).
-  * `process_config_schema.yaml`.
+  * `config_schema.json`.
+  * `process_config_schema.json`.
   * `process_config.yaml`: Definition of the development root process ( steps classification, parameter types, link classification, steps configs ).
   * `templates/`: templates for different step types based on steps classifications.
 * `glow/`: Project data (instances of entities).
