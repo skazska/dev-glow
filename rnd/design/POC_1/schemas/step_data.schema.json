@@ -1,0 +1,243 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://dev-glow.io/schemas/step_data.schema.json",
+    "title": "Glow Step Data File",
+    "description": "Schema for step data file YAML frontmatter (glow/**/*.md frontmatter)",
+    "type": "object",
+    "properties": {
+        "attr": {
+            "type": "object",
+            "description": "Step attributes",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Step identifier within parent scope",
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                },
+                "fqid": {
+                    "type": "string",
+                    "description": "Fully qualified identifier (dot-separated path from root)",
+                    "pattern": "^[A-Za-z0-9_.-]+$"
+                },
+                "classification": {
+                    "type": "string",
+                    "description": "Classification expression"
+                },
+                "purpose": {
+                    "type": "string",
+                    "description": "Step purpose or destiny"
+                },
+                "expectations": {
+                    "type": "string",
+                    "description": "Criteria to consider step done"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "Current step status",
+                    "enum": [
+                        "wait",
+                        "todo",
+                        "in-progress",
+                        "done"
+                    ]
+                }
+            },
+            "required": [
+                "id",
+                "status"
+            ],
+            "additionalProperties": false
+        },
+        "input": {
+            "type": "array",
+            "description": "Input parameters with values",
+            "items": {
+                "$ref": "#/$defs/ParameterValue"
+            }
+        },
+        "scope": {
+            "type": "array",
+            "description": "Scope parameters with values",
+            "items": {
+                "$ref": "#/$defs/ParameterValue"
+            }
+        },
+        "output": {
+            "type": "array",
+            "description": "Output parameters with values",
+            "items": {
+                "$ref": "#/$defs/ParameterValue"
+            }
+        },
+        "parent": {
+            "type": "array",
+            "description": "Parent step stack (execution context)",
+            "items": {
+                "$ref": "#/$defs/ParentRef"
+            }
+        },
+        "own_steps": {
+            "type": "array",
+            "description": "Sub-steps for step-as-process",
+            "items": {
+                "$ref": "#/$defs/StepRef"
+            }
+        },
+        "links": {
+            "type": "array",
+            "description": "Links to other steps",
+            "items": {
+                "$ref": "#/$defs/LinkRef"
+            }
+        }
+    },
+    "required": [
+        "attr"
+    ],
+    "additionalProperties": false,
+    "$defs": {
+        "ParameterValue": {
+            "type": "object",
+            "description": "Parameter with its value",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Parameter identifier"
+                },
+                "value": {
+                    "description": "Parameter value (type depends on parameter data_type)"
+                }
+            },
+            "required": [
+                "id"
+            ],
+            "additionalProperties": false
+        },
+        "ParentRef": {
+            "type": "object",
+            "description": "Reference to parent step in execution stack",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Parent step ID"
+                },
+                "steps": {
+                    "type": "array",
+                    "description": "Sibling steps in parent's iteration",
+                    "items": {
+                        "$ref": "#/$defs/StepRef"
+                    }
+                }
+            },
+            "required": [
+                "id"
+            ],
+            "additionalProperties": false
+        },
+        "StepRef": {
+            "type": "object",
+            "description": "Reference to a step with status",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Step ID"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "Step status",
+                    "enum": [
+                        "wait",
+                        "todo",
+                        "in-progress",
+                        "done"
+                    ]
+                }
+            },
+            "required": [
+                "id",
+                "status"
+            ],
+            "additionalProperties": false
+        },
+        "LinkRef": {
+            "type": "object",
+            "description": "Reference to a linked step",
+            "properties": {
+                "step_id": {
+                    "type": "string",
+                    "description": "Linked step ID"
+                },
+                "link_type": {
+                    "type": "string",
+                    "description": "Type of link (dependency, predecessor, or custom)"
+                },
+                "step_status": {
+                    "type": "string",
+                    "description": "Current status of linked step",
+                    "enum": [
+                        "wait",
+                        "todo",
+                        "in-progress",
+                        "done"
+                    ]
+                }
+            },
+            "required": [
+                "step_id",
+                "link_type"
+            ],
+            "additionalProperties": false
+        },
+        "ContentValue": {
+            "type": "object",
+            "description": "CONTENT type parameter value",
+            "properties": {
+                "uri": {
+                    "type": "string",
+                    "description": "Relative path or absolute URL to artifact"
+                },
+                "mime": {
+                    "type": "string",
+                    "description": "MIME type of the content"
+                },
+                "title": {
+                    "type": "string",
+                    "description": "Display title for links"
+                }
+            },
+            "required": [
+                "uri"
+            ],
+            "additionalProperties": false
+        },
+        "SetValue": {
+            "type": "array",
+            "description": "SET type parameter value (hierarchical coded list)",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "Hierarchical code (dot-separated)"
+                    },
+                    "value": {
+                        "type": "string",
+                        "description": "Human-readable value"
+                    }
+                },
+                "required": [
+                    "code",
+                    "value"
+                ],
+                "additionalProperties": false
+            }
+        },
+        "RangeValue": {
+            "type": "array",
+            "description": "Range type parameter value [min, max]",
+            "items": {},
+            "minItems": 2,
+            "maxItems": 2
+        }
+    }
+}

@@ -427,7 +427,7 @@ Purpose: Initialize step, provide required scope parameters, create or update re
 
 `--new` is optional, if provided, initializes new iteration of step-as-process if it is allowed (i.e. curent is done).
 
-`scope_param` for each parameter in step's scope must be provided as `--param_name=param_value`. For CONTENT type parameters, `param_value` is path to artefact file or uri. When path is provided, artefact file is copied to step's artefacts folder. 
+`scope_param` for each parameter in step's scope must be provided as `--param_name=param_value`. For CONTENT type parameters, `param_value` is path to artefact file or uri. When path is provided, artefact file is copied to step's artefacts folder.
 
 If step to initialize is not found, or required scope parameters are not provided, command fails.
 
@@ -592,17 +592,71 @@ Expected result:
 
 ## 6. Configuration File Schemas
 
-TODO: Define YAML schemas for configuration files.
+> Requirements: POC_1-1.1, POC_1-1.2, POC_1-1.6
 
-## Summaries
+### 6.1. Schema Validation Approach
 
-Summary files are markdown files, named `summary.md`, located in each iteration folder or step-as-task's folder.
+Configuration files are validated using **JSON Schema (Draft-07)**. This approach provides:
 
-It is to agregate information about the iteration or task:
+1. **YAML Compatibility**: YAML 1.2 is a superset of JSON, so JSON Schema validates YAML directly.
+2. **IDE Integration**: VS Code and other editors provide autocomplete, hover docs, and inline validation via YAML Language Server.
+3. **Rust Tooling**:
+   * `schemars` crate generates schemas from Rust structs (single source of truth).
+   * `jsonschema` crate provides runtime validation with detailed error messages.
+4. **Human-Readable Errors**: Schema validation produces actionable error messages for users.
 
-???
+### 6.2. Schema Files
 
-TODO
+Schemas are located in `.glow/schemas/` (shipped with glow) and referenced in YAML files.
+
+| Schema File | Validates | Description |
+|-------------|-----------|-------------|
+| [config.schema.json](schemas/config.schema.json) | `.glow/config.yaml` | General project settings: data folder, template locations |
+| [process_config.schema.json](schemas/process_config.schema.json) | `.glow/process_config.yaml` | Process definition: steps, classifications, parameters, links |
+| [mcp_config.schema.json](schemas/mcp_config.schema.json) | `.glow/mcp_config.yaml` | MCP server settings: resources, tools, prompts (optional) |
+| [step_data.schema.json](schemas/step_data.schema.json) | `glow/**/*.md` frontmatter | Step data file structure: attributes, parameters, context |
+
+### 6.3. Schema Usage
+
+TODO: AI generated. Work through and adjust as needed.
+
+#### 6.3.1. IDE Integration
+
+YAML files reference schemas for editor support:
+
+```yaml
+# .glow/config.yaml
+# yaml-language-server: $schema=./schemas/config.schema.json
+version: "0.1.0"
+project_name: "My Project"
+data_folder: "glow/"
+```
+
+#### 6.3.2. Runtime Validation
+
+CLI validates on load with user-friendly errors:
+
+```
+ERROR [CONFIG_ERROR]: Invalid process_config.yaml
+  At path: $.root_process.steps[0].inputs[0]
+  Message: Missing required property 'id'
+  
+  Suggestion: Each input parameter must have an 'id' field.
+```
+
+### 6.4. Schema Design Notes
+
+| Schema | Key Design Decisions |
+|--------|---------------------|
+| **config** | Minimal required fields; sensible defaults for quick start |
+| **process_config** | Recursive `StepDefinition` supports arbitrary nesting; `$defs` for reuse |
+| **mcp_config** | Entirely optional; allows granular control over AI access |
+| **step_data** | Mirrors template output structure; supports all data types from Section 11 |
+
+### 6.5. Validation Timing
+
+Each time configuration file is loaded or saved.
+Each time step data file is loaded or saved.
 
 ## 7. Context Quality Assessment
 
@@ -627,6 +681,7 @@ completeness = (filled_required_params / total_required_params) * 100
 ```
 
 Levels:
+
 * **Complete**: 100% - all required parameters filled
 * **Sufficient**: ≥80% - most parameters filled, can proceed
 * **Insufficient**: <80% - missing critical context
@@ -642,6 +697,7 @@ Context consistency is evaluated based on:
 3. **Status Logic**: Step statuses align with dependency states.
 
 Consistency checks:
+
 * No orphaned links (links to non-existent steps).
 * No circular dependencies.
 * Parameter mappings resolve correctly.
@@ -658,6 +714,7 @@ Semantic connection evaluates traceability:
 3. **Horizontal Traceability**: Related steps are properly linked.
 
 Connection score based on:
+
 * Percentage of steps with proper parent references.
 * Percentage of requirements with linked implementations.
 * Coverage of semantic links across process phases.
@@ -930,23 +987,25 @@ Templated string with parameter refs.
 
 `"See {{parent.scope.DESIGN_DOC}}"`
 
-## 13. File Naming Conventions
+## 12. File Naming Conventions
+
+TODO: AI generated. Work through and adjust as needed.
 
 > Requirements: POC_1-9.1, POC_1-9.2
 
-### 13.1. Step Data File
+### 12.1. Step Data File
 
 > Requirements: POC_1-9.1, POC_1-9.1.2
 
 Keep step files named align with step identifiers for easy mapping.
 
-### 13.2. Step Folders
+### 12.2. Step Folders
 
 > Requirements: POC_1-9.1.1, POC_1-9.2
 
 step folder name must be same as step data file name.
 
-### 13.3. Iteration Folders
+### 12.3. Iteration Folders
 
 > Requirements: POC_1-9.2, POC_1-1.2
 
@@ -957,13 +1016,13 @@ Examples:
 * `iteration_000001/`
 * `iteration_000002/`
 
-## 14. Implementation Notes
+## 13. Implementation Notes
 
 TODO: AI generated. Work through and adjust as needed.
 
 > Requirements: (Design extension - no direct requirement)
 
-### 14.1. Technology Stack
+### 13.1. Technology Stack
 
 > Requirements: (Design extension - no direct requirement)
 
@@ -974,7 +1033,7 @@ TODO: AI generated. Work through and adjust as needed.
 * **MCP Server**: Custom implementation following MCP specification
 * **File Watching**: `notify` crate for file system events (optional)
 
-### 14.2. Core Library Structure
+### 13.2. Core Library Structure
 
 > Requirements: (Design extension - no direct requirement)
 
@@ -997,7 +1056,7 @@ glow-core/
 │   └── quality/         # Context quality assessment
 ```
 
-### 14.3. CLI Application Structure
+### 13.3. CLI Application Structure
 
 > Requirements: POC_1-2, POC_1-3, POC_1-4, POC_1-5, POC_1-6, POC_1-7, POC_1-8
 
@@ -1018,7 +1077,7 @@ glow-cli/
 │   └── output/          # Formatting for terminal output
 ```
 
-### 14.4. MCP Server Structure
+### 13.4. MCP Server Structure
 
 > Requirements: POC_1-11
 
@@ -1031,3 +1090,27 @@ glow-mcp/
 │   ├── tools/           # Tool implementations
 │   └── prompts/         # Prompt templates
 ```
+
+## 14 Summaries
+
+TODO: Investigate context assesment, maintenance and evolution questions and ways to address or improve them.
+
+At the moment, summary use cases are not clear and consists of:
+
+1. there is summary file in each step folder and iteration folder.
+2. finishing step allows to commit summary.
+3. summary file content should be updated when step is finished or iteration is finished.
+
+No exact purpose, logic, format or structure defined yet.
+
+This is entirely open for further investigation and definition during POC_1 implementation and evaluation.
+
+## 15 History
+
+TODO: investigate project logging questions.
+
+At the moment, no logging or history tracking defined.
+
+`glow progress` command provides current status snapshot, but no time metrics or history.
+
+This is entirely open for further investigation and definition during POC_1 implementation and evaluation.
