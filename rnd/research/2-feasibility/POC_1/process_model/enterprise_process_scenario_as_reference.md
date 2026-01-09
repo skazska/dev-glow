@@ -336,6 +336,8 @@ Activities:
 
 Implementation includes coding, testing, code review, integration, and documentation activities to develop the product increment according to the defined tasks.
 
+> AI generated.
+
 Inputs:
 
 1. Defined Tasks with detailed requirements and context.
@@ -373,6 +375,8 @@ Activities:
 9. Merge approved code into the integration branch.
 
 #### Release Loop
+
+> AI generated.
 
 Release Loop includes iterative cycles of deployment, delivery increment testing, regression testing, stabilization, documentation, and release.
 
@@ -413,6 +417,8 @@ Activities:
 #### Delivery
 
 Delivery includes delivery and deployment of the product, gathering feedback, support, maintenance, hot-fix delivery.
+
+> AI generated.
 
 Inputs:
 

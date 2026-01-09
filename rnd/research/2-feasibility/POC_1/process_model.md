@@ -221,7 +221,6 @@ Set of steps can be linked by precedence, dependency, or other relations.
 Step links can be strong (precedence, dependency) or weak (relations which does-not restrict execution).
 Strong links define process structure and can only refer steps within the same process iteration.
 Steps of iteration can not form closed loops, if they do - they are sub-process.
-Links can be conditional, defining different paths through the process based on context or outcomes of previous steps.
 
 These allow to build a process tree for any desirable complexity level.
 
@@ -236,22 +235,18 @@ Step features:
 
 Links features:
 
-1. Classification: links must be classifiable.
-2. Configuration: link characteristics must be configurable.
-   - characteristics: id, name, description, type, condition, isDependecy, isPrecedency, etc...
+1. Configuration: link characteristics must be configurable.
+   - characteristics: id, name, description, type etc...
+   - two predefited link types: dependency, predecessor
 
 Step paramenters features:
 
-1. Classification: parameters must be classifiable.
-2. Configuration: parameter characteristics must be configurable.
-   - characteristics: id, name, description, type, validators
-
-Step parameter validators features:
-
-1. Parameter type: validators must be type-specific.
-2. Validator types: validators must support different validation types (e.g., range, format, size, mime-type, regex).
+1. Configuration: parameter characteristics must be configurable.
+   - characteristics: id, name, description, data type
 
 ### AI-driven automation and augmentation
+
+> AI generated.
 
 AI agents can act as virtual team members, handling repetitive or cognitive-heavy tasks to reduce the burden on human developers.
 
@@ -268,6 +263,8 @@ AI agents can act as virtual team members, handling repetitive or cognitive-heav
 
 ### Usage simplicity and reasonableness of actions
 
+> AI generated.
+
 To ensure the process is an enabler rather than a blocker, it must be designed with the user's cognitive load in mind.
 
 - **Minimal Friction:** Process steps should be automated where possible. Manual inputs should be requested only when necessary and should be brief.
@@ -277,6 +274,8 @@ To ensure the process is an enabler rather than a blocker, it must be designed w
 - **Progressive Disclosure:** The process should start simple and reveal complexity only as the project grows or specific needs arise.
 
 ### Template-based process configuration
+
+> AI generated.
 
 To cater to different project types and team sizes without overwhelming configuration, the system should use a template-based approach.
 
@@ -310,3 +309,9 @@ Context quality assessment can be approached in terms of:
 1. is context complete? (complete, missing, not enough)
 2. is context consistent? (consistent, inconsistent, contradictory)
 3. is context solid? (solid, weak, fragmented)
+
+Context quality must be supported on all stages of the development process. To do so there must be context quality gates at key process steps, as well as continuous context quality monitoring and improvement mechanisms. 
+Ways to achieve this:
+
+1. Predefined step configurations and templates that enforce context quality standards.
+2. Additional context quality enforcement characteristics for steps and links.
