@@ -1,0 +1,367 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://dev-glow.io/schemas/process_config.schema.json",
+    "title": "Glow Process Configuration",
+    "description": "Process definition including steps, classifications, parameters, and links (.glow/process_config.yaml)",
+    "type": "object",
+    "properties": {
+        "version": {
+            "type": "string",
+            "description": "Schema version for migration support",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "default": "0.1.0"
+        },
+        "classifications": {
+            "type": "array",
+            "description": "Ordered list of classification dictionaries for multi-dimensional grouping",
+            "items": {
+                "$ref": "#/$defs/ClassificationDictionary"
+            },
+            "default": []
+        },
+        "parameter_types": {
+            "type": "array",
+            "description": "Custom parameter type definitions",
+            "items": {
+                "$ref": "#/$defs/ParameterType"
+            },
+            "default": []
+        },
+        "link_types": {
+            "type": "array",
+            "description": "Link type definitions beyond built-in dependency/predecessor",
+            "items": {
+                "$ref": "#/$defs/LinkType"
+            },
+            "default": []
+        },
+        "root_process": {
+            "$ref": "#/$defs/StepDefinition",
+            "description": "Root process step definition (ID is always ROOT)"
+        }
+    },
+    "required": [
+        "version",
+        "root_process"
+    ],
+    "additionalProperties": false,
+    "$defs": {
+        "ClassificationDictionary": {
+            "type": "object",
+            "description": "A classification dimension with available values",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Unique identifier for this classification dimension",
+                    "pattern": "^[A-Za-z_][A-Za-z0-9_]*$"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Human-readable name"
+                },
+                "values": {
+                    "type": "array",
+                    "description": "Available classification values in this dimension",
+                    "items": {
+                        "$ref": "#/$defs/ClassificationValue"
+                    },
+                    "minItems": 1
+                }
+            },
+            "required": [
+                "id",
+                "values"
+            ],
+            "additionalProperties": false
+        },
+        "ClassificationValue": {
+            "type": "object",
+            "description": "A single classification value with optional defaults",
+            "properties": {
+                "key": {
+                    "type": "string",
+                    "description": "Classification key used in expressions",
+                    "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Human-readable name"
+                },
+                "template": {
+                    "type": "string",
+                    "description": "Template file name to use for this classification"
+                },
+                "default_attributes": {
+                    "type": "object",
+                    "description": "Default attribute values for steps with this classification",
+                    "additionalProperties": true
+                },
+                "default_inputs": {
+                    "type": "array",
+                    "description": "Default input parameters for this classification",
+                    "items": {
+                        "$ref": "#/$defs/ParameterRef"
+                    }
+                },
+                "default_outputs": {
+                    "type": "array",
+                    "description": "Default output parameters for this classification",
+                    "items": {
+                        "$ref": "#/$defs/ParameterRef"
+                    }
+                },
+                "default_scope": {
+                    "type": "array",
+                    "description": "Default scope parameters for this classification",
+                    "items": {
+                        "$ref": "#/$defs/ParameterRef"
+                    }
+                }
+            },
+            "required": [
+                "key"
+            ],
+            "additionalProperties": false
+        },
+        "ParameterType": {
+            "type": "object",
+            "description": "Parameter type definition",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Unique identifier for this parameter type",
+                    "pattern": "^[A-Z_][A-Z0-9_]*$"
+                },
+                "purpose": {
+                    "type": "string",
+                    "description": "Description of what this parameter represents"
+                },
+                "data_type": {
+                    "type": "string",
+                    "description": "Data type of the parameter value",
+                    "enum": [
+                        "STR",
+                        "INT",
+                        "DEC",
+                        "BOOL",
+                        "DATE",
+                        "RANGE_INT",
+                        "RANGE_DEC",
+                        "RANGE_DATE",
+                        "SET",
+                        "CONTENT",
+                        "TEMPLATE"
+                    ]
+                },
+                "prefix": {
+                    "type": "string",
+                    "description": "Optional prefix to prepend when rendering"
+                },
+                "is_required": {
+                    "type": "boolean",
+                    "description": "Whether this parameter must have a value",
+                    "default": false
+                },
+                "default_value": {
+                    "description": "Default value if not provided"
+                },
+                "validation": {
+                    "$ref": "#/$defs/ParameterValidation"
+                }
+            },
+            "required": [
+                "id",
+                "data_type"
+            ],
+            "additionalProperties": false
+        },
+        "ParameterValidation": {
+            "type": "object",
+            "description": "Validation rules for parameter values",
+            "properties": {
+                "pattern": {
+                    "type": "string",
+                    "description": "Regex pattern for STR type"
+                },
+                "min": {
+                    "type": "number",
+                    "description": "Minimum value for numeric types"
+                },
+                "max": {
+                    "type": "number",
+                    "description": "Maximum value for numeric types"
+                },
+                "enum": {
+                    "type": "array",
+                    "description": "Allowed values",
+                    "items": {}
+                },
+                "mime_types": {
+                    "type": "array",
+                    "description": "Allowed MIME types for CONTENT type",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "ParameterRef": {
+            "type": "object",
+            "description": "Reference to a parameter type with optional overrides",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Parameter identifier in step scope",
+                    "pattern": "^[A-Z_][A-Z0-9_]*$"
+                },
+                "type_ref": {
+                    "type": "string",
+                    "description": "Reference to parameter_types definition"
+                },
+                "purpose": {
+                    "type": "string",
+                    "description": "Override purpose for this usage"
+                },
+                "is_required": {
+                    "type": "boolean",
+                    "description": "Override required flag"
+                },
+                "default_value": {
+                    "description": "Override default value"
+                },
+                "mapping": {
+                    "type": "string",
+                    "description": "Template expression for deriving value from context"
+                }
+            },
+            "required": [
+                "id"
+            ],
+            "additionalProperties": false
+        },
+        "LinkType": {
+            "type": "object",
+            "description": "Custom link type definition",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Unique link type identifier",
+                    "pattern": "^[a-z_][a-z0-9_-]*$"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Human-readable name"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of this link type"
+                },
+                "is_blocking": {
+                    "type": "boolean",
+                    "description": "Whether this link blocks step execution",
+                    "default": false
+                }
+            },
+            "required": [
+                "id"
+            ],
+            "additionalProperties": false
+        },
+        "StepDefinition": {
+            "type": "object",
+            "description": "Step configuration definition",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Step identifier (ROOT for root process)",
+                    "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+                },
+                "purpose": {
+                    "type": "string",
+                    "description": "Description of step's purpose or destiny"
+                },
+                "classification": {
+                    "type": "string",
+                    "description": "Classification expression (e.g., 'Feature,Backend')"
+                },
+                "expectations": {
+                    "type": "string",
+                    "description": "Criteria to consider step done"
+                },
+                "template": {
+                    "type": "string",
+                    "description": "Template file name override"
+                },
+                "inputs": {
+                    "type": "array",
+                    "description": "Input parameters for this step",
+                    "items": {
+                        "$ref": "#/$defs/ParameterRef"
+                    }
+                },
+                "outputs": {
+                    "type": "array",
+                    "description": "Output parameters produced by this step",
+                    "items": {
+                        "$ref": "#/$defs/ParameterRef"
+                    }
+                },
+                "scope": {
+                    "type": "array",
+                    "description": "Scope parameters for this step",
+                    "items": {
+                        "$ref": "#/$defs/ParameterRef"
+                    }
+                },
+                "steps": {
+                    "type": "array",
+                    "description": "Sub-steps for step-as-process",
+                    "items": {
+                        "$ref": "#/$defs/StepDefinition"
+                    }
+                },
+                "links": {
+                    "type": "array",
+                    "description": "Links between sub-steps",
+                    "items": {
+                        "$ref": "#/$defs/LinkDefinition"
+                    }
+                },
+                "allow_iterations": {
+                    "type": "boolean",
+                    "description": "Whether multiple iterations are allowed",
+                    "default": true
+                }
+            },
+            "required": [
+                "id"
+            ],
+            "additionalProperties": false
+        },
+        "LinkDefinition": {
+            "type": "object",
+            "description": "Link between steps in process definition",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "Link type (dependency, predecessor, or custom)",
+                    "default": "dependency"
+                },
+                "from": {
+                    "type": "string",
+                    "description": "Source step ID"
+                },
+                "to": {
+                    "type": "string",
+                    "description": "Target step ID"
+                }
+            },
+            "required": [
+                "from",
+                "to"
+            ],
+            "additionalProperties": false
+        }
+    }
+}

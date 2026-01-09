@@ -1,0 +1,146 @@
+# TaskTrack Process Configuration
+# Based on POC_1/scenario/process_config.yaml
+
+version: "1.0"
+
+process:
+  id: "solo-dev-feature-development"
+  name: "Solo Developer Feature Development"
+  description: "A streamlined process for solo developers to implement features with AI assistance"
+
+step_templates:
+  task_default: |
+    # {{step.id}}: {{step.purpose}}
+
+    ## Context
+    {{#if parent}}
+    Parent: {{parent.id}} - {{parent.purpose}}
+    {{/if}}
+
+    {{#if step.expectations}}
+    ## Expectations
+    {{step.expectations}}
+    {{/if}}
+
+    ## Work Log
+    <!-- Record your progress here -->
+
+    ## Output
+    <!-- Document outputs before marking complete -->
+
+steps:
+  - id: "ROOT"
+    classification: "Process"
+    purpose: "TaskTrack Development Process"
+    description: "Main entry point for TaskTrack project development"
+    own_steps:
+      - id: "FEAT"
+        repeatable: true
+        classification: "Process"
+        purpose: "Feature Development"
+        description: "Develop a single feature from requirements to testing"
+        scope:
+          - id: "FEATURE_ID"
+            data_type: "String"
+            required: true
+            description: "Unique identifier for the feature (e.g., 001)"
+          - id: "FEATURE_NAME"
+            data_type: "String"
+            required: true
+            description: "Human-readable feature name"
+          - id: "FEATURE_DESCRIPTION"
+            data_type: "String"
+            description: "Detailed description of the feature"
+        output:
+          - id: "RELEASE_NOTES"
+            data_type: "String"
+            description: "Release notes for the completed feature"
+        own_steps:
+          - id: "REQ"
+            repeatable: true
+            classification: "Task"
+            purpose: "Requirements Gathering"
+            description: "Gather and document requirements for the feature"
+            expectations: |
+              - Identify all user stories
+              - Define acceptance criteria
+              - Document edge cases
+            scope:
+              - id: "REQ_ID"
+                data_type: "String"
+            output:
+              - id: "REQUIREMENTS_DOC"
+                data_type: "String"
+                description: "Path to requirements document"
+              - id: "ACCEPTANCE_CRITERIA"
+                data_type: "Array"
+                description: "List of acceptance criteria"
+
+          - id: "DESIGN"
+            repeatable: true
+            classification: "Task"
+            purpose: "Solution Design"
+            description: "Design the technical solution"
+            expectations: |
+              - Create system design document
+              - Define API contracts
+              - Document data models
+            link:
+              - source: "REQ"
+                type: "waits_for"
+                description: "Design requires requirements to be complete"
+            input:
+              - id: "REQUIREMENTS_DOC"
+                data_type: "String"
+                from: "REQ.REQUIREMENTS_DOC"
+            output:
+              - id: "DESIGN_DOC"
+                data_type: "String"
+              - id: "API_SPEC"
+                data_type: "String"
+
+          - id: "IMPL"
+            repeatable: true
+            classification: "Task"
+            purpose: "Implementation"
+            description: "Implement the designed solution"
+            expectations: |
+              - Write clean, documented code
+              - Follow coding standards
+              - Include unit tests
+            link:
+              - source: "DESIGN"
+                type: "waits_for"
+            input:
+              - id: "DESIGN_DOC"
+                data_type: "String"
+                from: "DESIGN.DESIGN_DOC"
+            output:
+              - id: "CODE_LOCATION"
+                data_type: "String"
+              - id: "COMMITS"
+                data_type: "Array"
+
+          - id: "TEST"
+            repeatable: true
+            classification: "Task"
+            purpose: "Testing and Validation"
+            description: "Test the implementation against requirements"
+            expectations: |
+              - Run all unit tests
+              - Perform integration testing
+              - Validate acceptance criteria
+            link:
+              - source: "IMPL"
+                type: "waits_for"
+            input:
+              - id: "CODE_LOCATION"
+                data_type: "String"
+                from: "IMPL.CODE_LOCATION"
+              - id: "ACCEPTANCE_CRITERIA"
+                data_type: "Array"
+                from: "REQ.ACCEPTANCE_CRITERIA"
+            output:
+              - id: "TEST_RESULTS"
+                data_type: "Object"
+                description: "Test execution results"

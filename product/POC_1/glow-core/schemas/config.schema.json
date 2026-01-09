@@ -1,0 +1,44 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://dev-glow.io/schemas/config.schema.json",
+    "title": "Glow Project Configuration",
+    "description": "General settings for a dev-glow project (.glow/config.yaml)",
+    "type": "object",
+    "properties": {
+        "version": {
+            "type": "string",
+            "description": "Schema version for migration support",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "default": "0.1.0"
+        },
+        "project_name": {
+            "type": "string",
+            "description": "Human-readable project name",
+            "minLength": 1
+        },
+        "data_folder": {
+            "type": "string",
+            "description": "Folder name for process data storage",
+            "default": "glow/"
+        },
+        "process_config": {
+            "type": "string",
+            "description": "Process configuration file name",
+            "default": "process_config.yaml"
+        },
+        "templates_folder": {
+            "type": "string",
+            "description": "Folder name for step templates",
+            "default": "templates/"
+        },
+        "default_template": {
+            "type": "string",
+            "description": "Default template file name for steps",
+            "default": "any-step.md"
+        }
+    },
+    "required": [
+        "version"
+    ],
+    "additionalProperties": false
+}

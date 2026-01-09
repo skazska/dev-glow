@@ -1,0 +1,69 @@
+[workspace]
+resolver = "2"
+members = [
+    "glow-core",
+    "glow-cli",
+    "glow-mcp",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/dev-glow/dev-glow"
+authors = ["Dev-Glow Contributors"]
+
+[workspace.dependencies]
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+
+# CLI
+clap = { version = "4.4", features = ["derive", "env"] }
+
+# Templating
+handlebars = "5.1"
+
+# Schema validation
+jsonschema = "0.17"
+schemars = { version = "0.8", features = ["derive"] }
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# File system
+walkdir = "2.4"
+notify = "6.1"
+directories = "5.0"
+
+# Async runtime (for MCP)
+tokio = { version = "1.35", features = ["full"] }
+async-trait = "0.1"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Testing
+tempfile = "3.9"
+assert_cmd = "2.0"
+predicates = "3.0"
+rstest = "0.18"
+
+# MCP protocol
+mcp-server = { version = "0.1", optional = true }
+
+# Regex for subset picking
+regex = "1.10"
+
+# Terminal formatting
+colored = "2.1"
+comfy-table = "7.1"
+
+# Date handling
+chrono = { version = "0.4", features = ["serde"] }
+
+# UUID for unique identifiers
+uuid = { version = "1.6", features = ["v4"] }

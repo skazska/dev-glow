@@ -1,0 +1,118 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://dev-glow.io/schemas/mcp_config.schema.json",
+    "title": "Glow MCP Server Configuration",
+    "description": "Optional configuration for glow-mcp server (.glow/mcp_config.yaml)",
+    "type": "object",
+    "properties": {
+        "version": {
+            "type": "string",
+            "description": "Schema version",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "default": "0.1.0"
+        },
+        "server": {
+            "type": "object",
+            "description": "Server identification",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Server name for MCP protocol",
+                    "default": "glow-mcp"
+                },
+                "version": {
+                    "type": "string",
+                    "description": "Server version to report"
+                }
+            },
+            "additionalProperties": false
+        },
+        "resources": {
+            "type": "object",
+            "description": "Resource exposure settings",
+            "properties": {
+                "expose_artifacts": {
+                    "type": "boolean",
+                    "description": "Include artifact file contents in resources",
+                    "default": true
+                },
+                "max_context_depth": {
+                    "type": "integer",
+                    "description": "Maximum depth for context tree traversal",
+                    "minimum": 1,
+                    "maximum": 20,
+                    "default": 5
+                },
+                "max_file_size_kb": {
+                    "type": "integer",
+                    "description": "Maximum artifact file size to include (KB)",
+                    "minimum": 1,
+                    "default": 512
+                }
+            },
+            "additionalProperties": false
+        },
+        "tools": {
+            "type": "object",
+            "description": "Tool behavior settings",
+            "properties": {
+                "require_confirmation": {
+                    "type": "array",
+                    "description": "Tools requiring user confirmation before execution",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "glow_init",
+                            "glow_start_step",
+                            "glow_finish_step",
+                            "glow_validate"
+                        ]
+                    },
+                    "default": [
+                        "glow_finish_step"
+                    ]
+                },
+                "read_only_mode": {
+                    "type": "boolean",
+                    "description": "Disable all write operations",
+                    "default": false
+                },
+                "allowed_tools": {
+                    "type": "array",
+                    "description": "Whitelist of allowed tools (empty = all allowed)",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "denied_tools": {
+                    "type": "array",
+                    "description": "Blacklist of denied tools",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "prompts": {
+            "type": "object",
+            "description": "Prompt template settings",
+            "properties": {
+                "custom_prompts_folder": {
+                    "type": "string",
+                    "description": "Folder for custom prompt templates",
+                    "default": "prompts/"
+                },
+                "enabled_prompts": {
+                    "type": "array",
+                    "description": "List of enabled prompt names (empty = all)",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "additionalProperties": false
+}

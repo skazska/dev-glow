@@ -1,0 +1,26 @@
+[package]
+name = "glow-mcp"
+description = "MCP server for dev-glow development process tooling"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "glow-mcp"
+path = "src/main.rs"
+
+[dependencies]
+glow-core = { path = "../glow-core" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+tokio = { workspace = true }
+async-trait = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+clap = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
+rstest = { workspace = true }
