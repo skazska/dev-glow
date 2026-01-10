@@ -1,0 +1,285 @@
+# POC_1 Valuation Scenario Process Configuration
+# Based on: rnd/design/POC_1/scenario/process_config.yaml
+# Adapted for current glow-core schema
+
+version: "0.1.0"
+
+# ============================================================================
+# CLASSIFICATIONS
+# Multi-dimensional classification system from the valuation scenario
+# ============================================================================
+classifications:
+  - id: stage
+    name: "Development Stage"
+    values:
+      - key: Feature
+        name: "Feature"
+      - key: Requirement
+        name: "Requirement"
+      - key: Task
+        name: "Implementation Task"
+
+  - id: layer
+    name: "Technical Layer"
+    values:
+      - key: Core
+        name: "Core Logic"
+      - key: CLI
+        name: "CLI Interface"
+      - key: Storage
+        name: "Data Storage"
+
+  - id: priority
+    name: "Priority"
+    values:
+      - key: Must
+        name: "Must Have"
+      - key: Should
+        name: "Should Have"
+      - key: Could
+        name: "Could Have"
+
+# ============================================================================
+# PARAMETER TYPES
+# ============================================================================
+parameter_types:
+  - id: PRODUCT_VISION
+    purpose: "High-level product vision statement"
+    data_type: STR
+    is_required: true
+
+  - id: DESCRIPTION
+    purpose: "Detailed description in markdown format"
+    data_type: CONTENT
+
+  - id: FEATURE_DESCRIPTION
+    purpose: "Feature description content"
+    data_type: CONTENT
+
+  - id: ACCEPTANCE_CRITERIA
+    purpose: "Definition of done criteria"
+    data_type: STR
+    is_required: true
+
+  - id: IMPLEMENTATION_LINK
+    purpose: "Link to implementation source file"
+    data_type: CONTENT
+
+  - id: TEST_LINK
+    purpose: "Link to test source file"
+    data_type: CONTENT
+
+  - id: NOTES
+    purpose: "Context-aware implementation notes"
+    data_type: TEMPLATE
+
+# ============================================================================
+# ROOT PROCESS: TaskTrack Development
+# ============================================================================
+root_process:
+  id: ROOT
+  purpose: "TaskTrack Development Process"
+  expectations: "All features implemented and product ready for release"
+  scope:
+    - id: PRODUCT_VISION
+      type_ref: PRODUCT_VISION
+      is_required: true
+
+  steps:
+    # ========================================================================
+    # FEATURE 001: Add Task
+    # ========================================================================
+    - id: FEAT-001
+      purpose: "Add Task Command"
+      classification: "Feature,CLI,Must"
+      expectations: "Users can add tasks via CLI command"
+      scope:
+        - id: FEATURE_DESCRIPTION
+          type_ref: FEATURE_DESCRIPTION
+
+      steps:
+        - id: REQ-001
+          purpose: "Define task data model"
+          classification: "Requirement,Core,Must"
+          expectations: "Task struct defined with all necessary fields"
+          outputs:
+            - id: ACCEPTANCE_CRITERIA
+              type_ref: ACCEPTANCE_CRITERIA
+              is_required: true
+
+        - id: REQ-002
+          purpose: "CLI command parsing for add"
+          classification: "Requirement,CLI,Must"
+          expectations: "Command syntax and arguments defined"
+          outputs:
+            - id: ACCEPTANCE_CRITERIA
+              type_ref: ACCEPTANCE_CRITERIA
+              is_required: true
+
+        - id: TASK-001
+          purpose: "Implement add command"
+          classification: "Task,CLI,Must"
+          expectations: "Add command functional with file storage"
+          inputs:
+            - id: REQ_DATA_MODEL
+              type_ref: ACCEPTANCE_CRITERIA
+              mapping: "links.REQ-001.output.ACCEPTANCE_CRITERIA"
+            - id: REQ_CLI_SYNTAX
+              type_ref: ACCEPTANCE_CRITERIA
+              mapping: "links.REQ-002.output.ACCEPTANCE_CRITERIA"
+          outputs:
+            - id: IMPLEMENTATION_LINK
+              type_ref: IMPLEMENTATION_LINK
+            - id: TEST_LINK
+              type_ref: TEST_LINK
+
+      links:
+        - type: dependency
+          from: TASK-001
+          to: REQ-001
+        - type: dependency
+          from: TASK-001
+          to: REQ-002
+
+    # ========================================================================
+    # FEATURE 002: List Tasks
+    # ========================================================================
+    - id: FEAT-002
+      purpose: "List Tasks Command"
+      classification: "Feature,CLI,Must"
+      expectations: "Users can view tasks with optional filtering"
+      scope:
+        - id: FEATURE_DESCRIPTION
+          type_ref: FEATURE_DESCRIPTION
+
+      steps:
+        - id: REQ-003
+          purpose: "List display format"
+          classification: "Requirement,CLI,Must"
+          expectations: "Output format defined (columns, colors, etc.)"
+          outputs:
+            - id: ACCEPTANCE_CRITERIA
+              type_ref: ACCEPTANCE_CRITERIA
+
+        - id: REQ-004
+          purpose: "Status filtering"
+          classification: "Requirement,CLI,Should"
+          expectations: "Filter flags defined (--all, --done, --pending)"
+          outputs:
+            - id: ACCEPTANCE_CRITERIA
+              type_ref: ACCEPTANCE_CRITERIA
+
+        - id: TASK-002
+          purpose: "Implement list command"
+          classification: "Task,CLI,Must"
+          expectations: "List command with filtering options"
+          inputs:
+            - id: REQ_DISPLAY_FORMAT
+              type_ref: ACCEPTANCE_CRITERIA
+              mapping: "links.REQ-003.output.ACCEPTANCE_CRITERIA"
+            - id: REQ_FILTERING
+              type_ref: ACCEPTANCE_CRITERIA
+              mapping: "links.REQ-004.output.ACCEPTANCE_CRITERIA"
+          outputs:
+            - id: IMPLEMENTATION_LINK
+              type_ref: IMPLEMENTATION_LINK
+            - id: TEST_LINK
+              type_ref: TEST_LINK
+
+      links:
+        - type: dependency
+          from: TASK-002
+          to: REQ-003
+        - type: dependency
+          from: TASK-002
+          to: REQ-004
+
+    # ========================================================================
+    # FEATURE 003: Complete Task
+    # ========================================================================
+    - id: FEAT-003
+      purpose: "Complete Task Command"
+      classification: "Feature,CLI,Must"
+      expectations: "Users can mark tasks as done"
+      scope:
+        - id: FEATURE_DESCRIPTION
+          type_ref: FEATURE_DESCRIPTION
+
+      steps:
+        - id: REQ-005
+          purpose: "Task completion logic"
+          classification: "Requirement,Core,Must"
+          expectations: "Completion behavior defined (timestamp, validation)"
+          outputs:
+            - id: ACCEPTANCE_CRITERIA
+              type_ref: ACCEPTANCE_CRITERIA
+
+        - id: TASK-003
+          purpose: "Implement done command"
+          classification: "Task,CLI,Must"
+          expectations: "Done command marks task complete"
+          inputs:
+            - id: REQ_COMPLETION_LOGIC
+              type_ref: ACCEPTANCE_CRITERIA
+              mapping: "links.REQ-005.output.ACCEPTANCE_CRITERIA"
+          outputs:
+            - id: IMPLEMENTATION_LINK
+              type_ref: IMPLEMENTATION_LINK
+            - id: TEST_LINK
+              type_ref: TEST_LINK
+
+      links:
+        - type: dependency
+          from: TASK-003
+          to: REQ-005
+
+    # ========================================================================
+    # FEATURE 004: Delete Task
+    # ========================================================================
+    - id: FEAT-004
+      purpose: "Delete Task Command"
+      classification: "Feature,CLI,Should"
+      expectations: "Users can remove tasks"
+      scope:
+        - id: FEATURE_DESCRIPTION
+          type_ref: FEATURE_DESCRIPTION
+
+      steps:
+        - id: REQ-006
+          purpose: "Task deletion behavior"
+          classification: "Requirement,Core,Should"
+          expectations: "Deletion rules defined (confirmation, soft/hard delete)"
+          outputs:
+            - id: ACCEPTANCE_CRITERIA
+              type_ref: ACCEPTANCE_CRITERIA
+
+        - id: TASK-004
+          purpose: "Implement delete command"
+          classification: "Task,CLI,Should"
+          expectations: "Delete command removes task"
+          inputs:
+            - id: REQ_DELETION_BEHAVIOR
+              type_ref: ACCEPTANCE_CRITERIA
+              mapping: "links.REQ-006.output.ACCEPTANCE_CRITERIA"
+          outputs:
+            - id: IMPLEMENTATION_LINK
+              type_ref: IMPLEMENTATION_LINK
+            - id: TEST_LINK
+              type_ref: TEST_LINK
+
+      links:
+        - type: dependency
+          from: TASK-004
+          to: REQ-006
+
+  # Root-level dependencies: FEAT-002, FEAT-003, FEAT-004 depend on FEAT-001
+  links:
+    - type: dependency
+      from: FEAT-002
+      to: FEAT-001
+    - type: dependency
+      from: FEAT-003
+      to: FEAT-001
+    - type: dependency
+      from: FEAT-004
+      to: FEAT-001
