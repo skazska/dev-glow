@@ -8,13 +8,13 @@ mod parameter;
 mod process;
 mod step;
 
-pub use link::{Link, LinkDefinition, LinkType};
+pub use link::{Link, LinkDefinition, LinkGraph, LinkType};
 pub use parameter::{
     ContentValue, DataType, Parameter, ParameterRef, ParameterType, ParameterValue, RangeValue,
     SetValue,
 };
 pub use process::{Process, ProcessDefinition};
-pub use step::{Step, StepAttributes, StepDefinition, StepStatus};
+pub use step::{LinkRef, ParentRef, Step, StepAttributes, StepDefinition, StepRef, StepStatus};
 
 /// Classification dimension for multi-dimensional grouping
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize, schemars::JsonSchema)]
@@ -98,14 +98,26 @@ mod tests {
 
     #[test]
     fn test_match_classification_exact() {
-        assert!(match_classification("Feature,Backend,Must", "Feature,Backend,Must"));
-        assert!(!match_classification("Feature,Backend,Must", "Task,Backend,Must"));
+        assert!(match_classification(
+            "Feature,Backend,Must",
+            "Feature,Backend,Must"
+        ));
+        assert!(!match_classification(
+            "Feature,Backend,Must",
+            "Task,Backend,Must"
+        ));
     }
 
     #[test]
     fn test_match_classification_wildcard() {
-        assert!(match_classification("Feature,Backend,Must", "*,Backend,Must"));
-        assert!(match_classification("Feature,Backend,Must", "Feature,*,Must"));
+        assert!(match_classification(
+            "Feature,Backend,Must",
+            "*,Backend,Must"
+        ));
+        assert!(match_classification(
+            "Feature,Backend,Must",
+            "Feature,*,Must"
+        ));
         assert!(match_classification("Feature,Backend,Must", "*,*,*"));
     }
 

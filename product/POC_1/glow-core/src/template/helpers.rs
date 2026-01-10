@@ -4,7 +4,7 @@
 
 use handlebars::{
     Context, Handlebars, Helper, HelperDef, HelperResult, Output, RenderContext, RenderError,
-    ScopedJson,
+    RenderErrorReason, ScopedJson,
 };
 use serde_json::Value;
 
@@ -36,16 +36,16 @@ impl HelperDef for SubsetHelper {
     ) -> HelperResult {
         let set_value = h
             .param(0)
-            .ok_or_else(|| RenderError::new("subset: missing set parameter"))?;
+            .ok_or(RenderErrorReason::ParamNotFoundForIndex("subset", 0))?;
 
         let selector = h
             .param(1)
             .and_then(|v| v.value().as_str())
             .unwrap_or("");
 
-        let set_array = set_value.value().as_array().ok_or_else(|| {
-            RenderError::new("subset: first parameter must be an array")
-        })?;
+        let set_array = set_value.value().as_array().ok_or(
+            RenderErrorReason::ParamTypeMismatchForName("subset", "0".into(), "array".into())
+        )?;
 
         let picker = SubsetPicker::new(selector);
         let result = picker.pick(set_array);
@@ -188,7 +188,7 @@ impl HelperDef for JsonHelper {
             .unwrap_or(&Value::Null);
 
         let json_str = serde_json::to_string_pretty(value)
-            .map_err(|e| RenderError::new(format!("json: {}", e)))?;
+            .map_err(|e| RenderErrorReason::Other(format!("json: {}", e)))?;
 
         out.write(&json_str)?;
         Ok(())

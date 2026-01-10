@@ -3,10 +3,10 @@
 //! Handles rendering of step data files and descriptions using Handlebars.
 
 mod helpers;
-mod renderer;
+pub mod renderer;
 mod subset;
 
-pub use renderer::TemplateEngine;
+pub use renderer::{TemplateContext, TemplateEngine};
 pub use subset::SubsetPicker;
 
 /// Default template for any step

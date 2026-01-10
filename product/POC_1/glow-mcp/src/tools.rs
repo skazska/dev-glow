@@ -13,7 +13,6 @@ use std::sync::Arc;
 
 use glow_core::engine::operations::ActionType;
 use glow_core::model::ParameterValue;
-use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 use crate::protocol::{RpcError, Tool, ToolResult};
@@ -211,7 +210,7 @@ async fn tool_next(state: &Arc<ServerState>) -> ToolResult {
                 let cmd = match action.action_type {
                     ActionType::Init => format!("glow init {}", action.fqid),
                     ActionType::Start => format!("glow start {}", action.fqid),
-                    ActionType::Continue => format!("glow show {}", action.fqid),
+                    ActionType::Review => format!("glow show {}", action.fqid),
                     ActionType::Finish => format!("glow finish {}", action.fqid),
                 };
                 text.push_str(&format!("→ {}\n  Command: {}\n\n", action.description, cmd));

@@ -7,20 +7,20 @@ use std::path::{Path, PathBuf};
 use crate::config::{Config, ConfigLoader, ProcessConfig};
 use crate::error::{GlowError, Result};
 use crate::model::{
-    LinkGraph, ParameterValue, Process, Step, StepAttributes, StepDefinition, StepRef, StepStatus,
+    LinkGraph, ParameterValue, Step, StepDefinition, StepRef, StepStatus,
 };
 use crate::storage::Storage;
 use crate::template::TemplateEngine;
 
 use super::state::StateManager;
 use super::validation::Validator;
-use super::context::ContextBuilder;
 
 /// Main process engine
 pub struct ProcessEngine {
     /// Project root path
     project_root: PathBuf,
     /// Configuration loader
+    #[allow(dead_code)]
     config_loader: ConfigLoader,
     /// Project configuration
     config: Config,
@@ -31,6 +31,7 @@ pub struct ProcessEngine {
     /// Template engine
     template_engine: TemplateEngine,
     /// State manager
+    #[allow(dead_code)]
     state_manager: StateManager,
     /// Validator
     validator: Validator,
@@ -302,11 +303,11 @@ impl ProcessEngine {
     fn init_process_iteration(&mut self, step: &mut Step, def: &StepDefinition) -> Result<()> {
         // Create iteration folder
         let iteration_num = 1; // TODO: Track iteration numbers
-        let iteration_path = self.storage.create_iteration_folder(step.fqid(), iteration_num)?;
+        let _iteration_path = self.storage.create_iteration_folder(step.fqid(), iteration_num)?;
 
         // Create sub-steps
         for sub_def in &def.steps {
-            let sub_fqid = format!("{}.{}", step.fqid(), sub_def.id);
+            let _sub_fqid = format!("{}.{}", step.fqid(), sub_def.id);
             let sub_step = Step::from_definition(sub_def, Some(step.fqid()));
             
             // Add to own_steps
@@ -328,25 +329,35 @@ impl ProcessEngine {
     /// Update sub-step statuses based on dependencies
     fn update_sub_step_statuses(&mut self, parent: &mut Step, def: &StepDefinition) -> Result<()> {
         let graph = LinkGraph::from_links(&def.links);
+        let parent_fqid = parent.fqid().to_string();
 
-        for own_step in &mut parent.own_steps {
-            let deps = graph.get_dependencies(&own_step.id);
-            let all_deps_done = deps.iter().all(|dep_id| {
-                parent.own_steps.iter()
-                    .find(|s| s.id == *dep_id)
-                    .map(|s| s.status == StepStatus::Done)
-                    .unwrap_or(false)
-            });
+        // First pass: collect status information and determine updates
+        let updates: Vec<(usize, String)> = parent.own_steps.iter().enumerate()
+            .filter_map(|(idx, own_step)| {
+                let deps = graph.get_dependencies(&own_step.id);
+                let all_deps_done = deps.iter().all(|dep_id| {
+                    parent.own_steps.iter()
+                        .find(|s| s.id == *dep_id)
+                        .map(|s| s.status == StepStatus::Done)
+                        .unwrap_or(false)
+                });
 
-            if deps.is_empty() || all_deps_done {
-                own_step.status = StepStatus::Todo;
-                
-                // Update the actual step file
-                let sub_fqid = format!("{}.{}", parent.fqid(), own_step.id);
-                if let Ok(mut sub_step) = self.storage.read_step(&sub_fqid) {
-                    sub_step.attr.status = StepStatus::Todo;
-                    self.storage.write_step(&sub_step)?;
+                if deps.is_empty() || all_deps_done {
+                    Some((idx, format!("{}.{}", parent_fqid, own_step.id)))
+                } else {
+                    None
                 }
+            })
+            .collect();
+
+        // Second pass: apply updates
+        for (idx, sub_fqid) in updates {
+            parent.own_steps[idx].status = StepStatus::Todo;
+            
+            // Update the actual step file
+            if let Ok(mut sub_step) = self.storage.read_step(&sub_fqid) {
+                sub_step.attr.status = StepStatus::Todo;
+                self.storage.write_step(&sub_step)?;
             }
         }
 

@@ -9,7 +9,7 @@ use handlebars::Handlebars;
 use serde::Serialize;
 
 use crate::error::{GlowError, Result};
-use crate::model::{ParameterValue, ParentRef, Step, StepRef, LinkRef, StepStatus};
+use crate::model::Step;
 
 use super::helpers::register_helpers;
 
@@ -208,7 +208,7 @@ impl TemplateEngine {
     }
 
     /// Get the template name for a step based on classification
-    pub fn get_template_for_step(&self, step: &Step, default: &str) -> String {
+    pub fn get_template_for_step(&self, _step: &Step, default: &str) -> String {
         // TODO: Implement classification-based template selection
         // For now, use default template
         default.to_string()

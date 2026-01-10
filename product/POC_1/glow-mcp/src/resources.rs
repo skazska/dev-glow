@@ -164,11 +164,10 @@ fn read_next_actions(engine: &ProcessEngine) -> Result<ResourceContent, RpcError
                 "action": match a.action_type {
                     ActionType::Init => "init",
                     ActionType::Start => "start",
-                    ActionType::Continue => "continue",
+                    ActionType::Review => "review",
                     ActionType::Finish => "finish",
                 },
-                "description": a.description,
-                "priority": a.priority
+                "description": a.description
             })
         })
         .collect();

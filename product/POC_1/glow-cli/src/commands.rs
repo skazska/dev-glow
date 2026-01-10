@@ -118,7 +118,7 @@ pub fn finish_step(
     print_info(&format!("Finishing step {}...", fqid.cyan()));
 
     match engine.finish_step(fqid, output_params, summary) {
-        Ok(step) => {
+        Ok(_step) => {
             print_success(&format!("Step {} completed", fqid.cyan()));
 
             // Show next available actions

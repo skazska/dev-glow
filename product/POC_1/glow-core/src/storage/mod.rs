@@ -130,7 +130,7 @@ impl Storage {
     }
 
     /// Load process state from files
-    pub fn load_process(&self, fqid: &str) -> Result<Option<Process>> {
+    pub fn load_process(&self, _fqid: &str) -> Result<Option<Process>> {
         // This will be implemented with full process loading logic
         todo!("Implement process loading")
     }

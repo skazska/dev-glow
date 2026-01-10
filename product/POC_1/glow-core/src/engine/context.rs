@@ -2,7 +2,7 @@
 //!
 //! Builds execution context for steps.
 
-use crate::model::{ParameterValue, ParentRef, Step, StepRef};
+use crate::model::{ParameterValue, ParentRef, Step};
 
 /// Context builder for step execution
 #[derive(Debug, Default)]

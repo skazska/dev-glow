@@ -11,6 +11,7 @@ use super::operations::{IssueType, ProcessEngine, ValidationIssue, ValidationRep
 #[derive(Debug, Default)]
 pub struct Validator {
     /// Validation rules
+    #[allow(dead_code)]
     rules: Vec<ValidationRule>,
 }
 

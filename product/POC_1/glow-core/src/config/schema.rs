@@ -26,7 +26,7 @@ pub fn validate_config<T: serde::Serialize>(value: &T, schema_json: &str) -> Res
         source: Some(Box::new(e)),
     })?;
 
-    let compiled = jsonschema::validator_for(&schema).map_err(|e| GlowError::ConfigError {
+    let compiled = jsonschema::JSONSchema::compile(&schema).map_err(|e| GlowError::ConfigError {
         message: format!("Failed to compile schema: {}", e),
         source: None,
     })?;
@@ -61,7 +61,7 @@ pub fn validate_yaml_file(file_path: &Path, schema_json: &str) -> Result<()> {
         }
     })?;
 
-    let compiled = jsonschema::validator_for(&schema).map_err(|e| GlowError::ConfigError {
+    let compiled = jsonschema::JSONSchema::compile(&schema).map_err(|e| GlowError::ConfigError {
         message: format!("Failed to compile schema: {}", e),
         source: None,
     })?;

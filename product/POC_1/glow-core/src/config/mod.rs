@@ -3,10 +3,10 @@
 //! Handles loading and validation of configuration files.
 
 mod loader;
-mod schema;
+pub mod schema;
 
 pub use loader::{Config, ConfigLoader, ProcessConfig};
-pub use schema::validate_config;
+pub use schema::{validate_config, CONFIG_SCHEMA, MCP_CONFIG_SCHEMA, PROCESS_CONFIG_SCHEMA, STEP_DATA_SCHEMA};
 
 use std::path::{Path, PathBuf};
 
