@@ -11,10 +11,10 @@ use glow_core::model::StepStatus;
 
 #[test]
 fn test_project_initialization() {
-    let project = TestProject::new("test_init");
+    let project = TestProject::empty();
 
     // Initialize project
-    let engine = ProcessEngine::init_project(project.path().to_path_buf(), Some("TaskTrack".to_string()))
+    let _engine = ProcessEngine::init_project(project.path().to_path_buf(), Some("TaskTrack".to_string()))
         .expect("Failed to initialize project");
 
     // Verify configuration was created
@@ -40,8 +40,8 @@ fn test_root_step_initialization() {
     // Verify sub-steps were created
     assert!(!root.own_steps.is_empty());
 
-    // Verify file was created
-    let root_file = project.path().join("glow/ROOT.step.md");
+    // Verify file was created (the step file is ROOT.md, not ROOT.step.md)
+    let root_file = project.path().join("glow/ROOT.md");
     assert!(root_file.exists());
 }
 
@@ -61,32 +61,32 @@ fn test_step_status_transitions() {
         .expect("Failed to start ROOT");
     assert_eq!(root.status(), StepStatus::InProgress);
 
-    // Initialize a feature step
+    // Initialize the FEAT step (using the definition ID, not an instance ID)
     use glow_core::model::ParameterValue;
     let feat = engine.init_step(
-        "FEAT-001",
+        "FEAT",
         vec![
             ParameterValue::new("FEATURE_ID", serde_json::json!("001")),
             ParameterValue::new("FEATURE_NAME", serde_json::json!("User Management")),
         ],
         false,
-    ).expect("Failed to init FEAT-001");
+    ).expect("Failed to init FEAT");
 
     assert_eq!(feat.status(), StepStatus::Todo);
 
-    // Start and finish a task within the feature
-    engine.start_step("ROOT.FEAT-001")
-        .expect("Failed to start FEAT-001");
+    // Start FEAT
+    engine.start_step("FEAT")
+        .expect("Failed to start FEAT");
 
-    // Initialize a child step
-    engine.init_step("ROOT.FEAT-001.REQ-001", vec![], false)
-        .expect("Failed to init REQ-001");
+    // Initialize a child step (REQ)
+    engine.init_step("FEAT.REQ", vec![], false)
+        .expect("Failed to init FEAT.REQ");
 
-    engine.start_step("ROOT.FEAT-001.REQ-001")
-        .expect("Failed to start REQ-001");
+    engine.start_step("FEAT.REQ")
+        .expect("Failed to start FEAT.REQ");
 
-    let completed = engine.finish_step("ROOT.FEAT-001.REQ-001", vec![], Some("Requirements gathered".to_string()))
-        .expect("Failed to finish REQ-001");
+    let completed = engine.finish_step("FEAT.REQ", vec![], Some("Requirements gathered".to_string()))
+        .expect("Failed to finish FEAT.REQ");
 
     assert_eq!(completed.status(), StepStatus::Done);
 }

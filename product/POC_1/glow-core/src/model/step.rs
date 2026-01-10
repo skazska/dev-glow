@@ -96,16 +96,16 @@ pub struct StepDefinition {
     /// Step identifier (ROOT for root process)
     pub id: String,
     /// Description of step's purpose or destiny
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub purpose: Option<String>,
     /// Classification expression (e.g., "Feature,Backend")
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub classification: Option<String>,
     /// Criteria to consider step done
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expectations: Option<String>,
     /// Template file name override
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
     /// Input parameters for this step
     #[serde(default)]

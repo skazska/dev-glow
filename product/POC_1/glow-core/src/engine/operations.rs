@@ -332,8 +332,14 @@ impl ProcessEngine {
         let parent_fqid = parent.fqid().to_string();
 
         // First pass: collect status information and determine updates
+        // Only consider steps that are currently in Wait status
         let updates: Vec<(usize, String)> = parent.own_steps.iter().enumerate()
             .filter_map(|(idx, own_step)| {
+                // Only update steps that are waiting
+                if own_step.status != StepStatus::Wait {
+                    return None;
+                }
+                
                 let deps = graph.get_dependencies(&own_step.id);
                 let all_deps_done = deps.iter().all(|dep_id| {
                     parent.own_steps.iter()
@@ -343,21 +349,30 @@ impl ProcessEngine {
                 });
 
                 if deps.is_empty() || all_deps_done {
-                    Some((idx, format!("{}.{}", parent_fqid, own_step.id)))
+                    // Construct FQID matching StepAttributes::from_definition logic
+                    // Children of ROOT don't include ROOT in their FQID
+                    let sub_fqid = if parent_fqid == "ROOT" {
+                        own_step.id.clone()
+                    } else {
+                        format!("{}.{}", parent_fqid, own_step.id)
+                    };
+                    Some((idx, sub_fqid))
                 } else {
                     None
                 }
             })
             .collect();
 
-        // Second pass: apply updates
+        // Second pass: apply updates (only to steps that were in Wait status)
         for (idx, sub_fqid) in updates {
             parent.own_steps[idx].status = StepStatus::Todo;
             
             // Update the actual step file
             if let Ok(mut sub_step) = self.storage.read_step(&sub_fqid) {
-                sub_step.attr.status = StepStatus::Todo;
-                self.storage.write_step(&sub_step)?;
+                if sub_step.attr.status == StepStatus::Wait {
+                    sub_step.attr.status = StepStatus::Todo;
+                    self.storage.write_step(&sub_step)?;
+                }
             }
         }
 
@@ -462,33 +477,28 @@ impl ProcessEngine {
     /// Update parent process after a step is done
     fn update_parent_after_step_done(&mut self, step: &Step) -> Result<()> {
         if let Some(parent_fqid) = self.get_parent_fqid(step.fqid()) {
-            if parent_fqid == "ROOT" {
-                // Update root process sub-step statuses
-                // TODO: Implement root-level tracking
-            } else {
-                let parent_def = self.process_config.find_step_definition(&parent_fqid)
-                    .ok_or_else(|| GlowError::StepNotFound { fqid: parent_fqid.clone() })?
-                    .clone();
+            let parent_def = self.process_config.find_step_definition(&parent_fqid)
+                .ok_or_else(|| GlowError::StepNotFound { fqid: parent_fqid.clone() })?
+                .clone();
 
-                let mut parent_step = self.storage.read_step(&parent_fqid)?;
+            let mut parent_step = self.storage.read_step(&parent_fqid)?;
 
-                // Update own_steps status
-                for own_step in &mut parent_step.own_steps {
-                    if own_step.id == step.attr.id {
-                        own_step.status = StepStatus::Done;
-                    }
+            // Update own_steps status
+            for own_step in &mut parent_step.own_steps {
+                if own_step.id == step.attr.id {
+                    own_step.status = StepStatus::Done;
                 }
-
-                // Re-evaluate waiting steps
-                self.update_sub_step_statuses(&mut parent_step, &parent_def)?;
-
-                // Check if all sub-steps are done
-                if parent_step.own_steps.iter().all(|s| s.status == StepStatus::Done) {
-                    parent_step.attr.status = StepStatus::Done;
-                }
-
-                self.storage.write_step(&parent_step)?;
             }
+
+            // Re-evaluate waiting steps (siblings whose dependencies may now be satisfied)
+            self.update_sub_step_statuses(&mut parent_step, &parent_def)?;
+
+            // Check if all sub-steps are done
+            if parent_step.own_steps.iter().all(|s| s.status == StepStatus::Done) {
+                parent_step.attr.status = StepStatus::Done;
+            }
+
+            self.storage.write_step(&parent_step)?;
         }
 
         Ok(())

@@ -187,12 +187,11 @@ impl TemplateEngine {
 
         let template_path = self.templates_dir.join(name);
         if template_path.exists() {
-            let content = std::fs::read_to_string(&template_path).map_err(|e| {
-                GlowError::FileReadError {
+            let content =
+                std::fs::read_to_string(&template_path).map_err(|e| GlowError::FileReadError {
                     path: template_path.clone(),
                     source: e,
-                }
-            })?;
+                })?;
 
             self.handlebars
                 .register_template_string(name, &content)
@@ -246,7 +245,11 @@ impl TemplateEngine {
 
     /// Render content template (description file)
     /// Replaces parameter references in content with actual values
-    pub fn render_content_template(&self, content: &str, context: &TemplateContext) -> Result<String> {
+    pub fn render_content_template(
+        &self,
+        content: &str,
+        context: &TemplateContext,
+    ) -> Result<String> {
         // Create a temporary template
         let mut hb = Handlebars::new();
         register_helpers(&mut hb);
@@ -272,12 +275,18 @@ impl TemplateEngine {
         // Simple regex-based conversion
         // Matches patterns like input.PARAM, scope.PARAM, parent.STEP.scope.PARAM, etc.
         let re = regex::Regex::new(
-            r"(?P<prefix>input|scope|output|parent|own_steps|links)\.(?P<rest>[A-Za-z0-9_.\[\]]+)"
-        ).unwrap();
+            r"(?P<prefix>input|scope|output|parent|own_steps|links)\.(?P<rest>[A-Za-z0-9_.\[\]]+)",
+        )
+        .unwrap();
 
         re.replace_all(content, |caps: &regex::Captures| {
-            format!("{{{{{}_{}}}}}", &caps["prefix"], &caps["rest"].replace('.', "_"))
-        }).to_string()
+            format!(
+                "{{{{{}_{}}}}}",
+                &caps["prefix"],
+                &caps["rest"].replace('.', "_")
+            )
+        })
+        .to_string()
     }
 
     /// Get templates directory
@@ -289,7 +298,7 @@ impl TemplateEngine {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::model::{StepAttributes, StepStatus};
+    use crate::model::{ParameterValue, StepAttributes, StepStatus};
     use tempfile::tempdir;
 
     fn create_test_step() -> Step {
@@ -302,8 +311,14 @@ mod tests {
                 expectations: Some("Feature works".to_string()),
                 status: StepStatus::Todo,
             },
-            input: vec![ParameterValue::new("REQUIREMENT", serde_json::json!("REQ-001"))],
-            scope: vec![ParameterValue::new("DESCRIPTION", serde_json::json!("./desc.md"))],
+            input: vec![ParameterValue::new(
+                "REQUIREMENT",
+                serde_json::json!("REQ-001"),
+            )],
+            scope: vec![ParameterValue::new(
+                "DESCRIPTION",
+                serde_json::json!("./desc.md"),
+            )],
             output: Vec::new(),
             parent: Vec::new(),
             own_steps: Vec::new(),

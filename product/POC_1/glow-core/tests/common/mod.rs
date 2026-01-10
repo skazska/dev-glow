@@ -11,8 +11,19 @@ pub struct TestProject {
 }
 
 impl TestProject {
-    /// Create a new test project
-    pub fn new(name: &str) -> Self {
+    /// Create a new empty test project (for init_project tests)
+    pub fn empty() -> Self {
+        let temp_dir = TempDir::new().expect("Failed to create temp dir");
+        let path = temp_dir.path().to_path_buf();
+
+        Self {
+            _temp_dir: temp_dir,
+            path,
+        }
+    }
+
+    /// Create a new test project with basic structure
+    pub fn new(_name: &str) -> Self {
         let temp_dir = TempDir::new().expect("Failed to create temp dir");
         let path = temp_dir.path().to_path_buf();
 
@@ -30,79 +41,112 @@ impl TestProject {
     pub fn with_tasktrack_config() -> Self {
         let project = Self::new("tasktrack");
 
-        // Write config.yaml
+        // Write config.yaml (updated to match current schema)
         let config = r#"
-version: "1.0"
-project_id: "TASK-TRACK"
+version: "0.1.0"
 project_name: "TaskTrack"
-process: "agile-feature"
-glow_dir: "glow"
+data_folder: "glow"
+process_config: "process_config.yaml"
+templates_folder: "templates/"
+default_template: "any-step.md"
 "#;
         fs::write(project.path.join(".glow/config.yaml"), config)
             .expect("Failed to write config");
 
-        // Write process_config.yaml
+        // Write process_config.yaml (updated to match current schema)
         let process_config = r#"
-version: "1.0"
-process:
-  id: "agile-feature"
-  name: "Agile Feature Development"
-  description: "A structured process for developing features"
+version: "0.1.0"
 
-steps:
-  - id: "ROOT"
-    classification: "Process"
-    purpose: "Main project process"
-    own_steps:
-      - id: "FEAT"
-        repeatable: true
-        classification: "Process"
-        purpose: "Feature development iteration"
-        scope:
-          - id: "FEATURE_ID"
-            data_type: "String"
-            required: true
-          - id: "FEATURE_NAME"
-            data_type: "String"
-            required: true
-        own_steps:
-          - id: "REQ"
-            repeatable: true
-            classification: "Task"
-            purpose: "Requirements gathering"
-            scope:
-              - id: "REQ_ID"
-                data_type: "String"
-            output:
-              - id: "REQUIREMENTS"
-                data_type: "String"
-          - id: "DESIGN"
-            classification: "Task"
-            purpose: "Design the solution"
-            link:
-              - source: "REQ"
-                type: "waits_for"
-            output:
-              - id: "DESIGN_DOC"
-                data_type: "String"
-          - id: "IMPL"
-            classification: "Task"
-            purpose: "Implement the feature"
-            link:
-              - source: "DESIGN"
-                type: "waits_for"
-            output:
-              - id: "CODE_LOCATION"
-                data_type: "String"
-          - id: "TEST"
-            classification: "Task"
-            purpose: "Test the implementation"
-            link:
-              - source: "IMPL"
-                type: "waits_for"
-            output:
-              - id: "TEST_RESULTS"
-                data_type: "String"
+classifications:
+  - id: type
+    name: "Step Type"
+    values:
+      - key: Feature
+        name: "Feature"
+      - key: Task
+        name: "Task"
+      - key: Process
+        name: "Process"
+
+parameter_types:
+  - id: FEATURE_ID
+    purpose: "Feature identifier"
+    data_type: STR
+    is_required: true
+
+  - id: FEATURE_NAME
+    purpose: "Feature name"
+    data_type: STR
+    is_required: true
+
+  - id: REQUIREMENTS
+    purpose: "Requirements document"
+    data_type: CONTENT
+
+  - id: DESIGN_DOC
+    purpose: "Design document"
+    data_type: CONTENT
+
+  - id: CODE_LOCATION
+    purpose: "Code location"
+    data_type: STR
+
+  - id: TEST_RESULTS
+    purpose: "Test results"
+    data_type: STR
+
+root_process:
+  id: ROOT
+  purpose: "TaskTrack Development Process"
+  expectations: "All features implemented"
+  steps:
+    - id: FEAT
+      purpose: "Feature Development"
+      classification: "Feature"
+      allow_iterations: true
+      scope:
+        - id: FEATURE_ID
+          type_ref: FEATURE_ID
+          is_required: true
+        - id: FEATURE_NAME
+          type_ref: FEATURE_NAME
+          is_required: true
+      steps:
+        - id: REQ
+          purpose: "Requirements Gathering"
+          classification: "Task"
+          allow_iterations: true
+          outputs:
+            - id: REQUIREMENTS
+              type_ref: REQUIREMENTS
+        - id: DESIGN
+          purpose: "Solution Design"
+          classification: "Task"
+          outputs:
+            - id: DESIGN_DOC
+              type_ref: DESIGN_DOC
+        - id: IMPL
+          purpose: "Implementation"
+          classification: "Task"
+          outputs:
+            - id: CODE_LOCATION
+              type_ref: CODE_LOCATION
+        - id: TEST
+          purpose: "Testing"
+          classification: "Task"
+          outputs:
+            - id: TEST_RESULTS
+              type_ref: TEST_RESULTS
+      links:
+        - type: dependency
+          from: DESIGN
+          to: REQ
+        - type: dependency
+          from: IMPL
+          to: DESIGN
+        - type: dependency
+          from: TEST
+          to: IMPL
 "#;
         fs::write(project.path.join(".glow/process_config.yaml"), process_config)
             .expect("Failed to write process config");

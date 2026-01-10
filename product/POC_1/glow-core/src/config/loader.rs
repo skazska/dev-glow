@@ -17,7 +17,7 @@ pub struct Config {
     #[serde(default = "default_version")]
     pub version: String,
     /// Human-readable project name
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project_name: Option<String>,
     /// Folder name for process data storage
     #[serde(default = "default_data_folder")]
@@ -258,7 +258,7 @@ mod tests {
     fn test_config_default() {
         let config = Config::default();
         assert_eq!(config.version, "0.1.0");
-        assert_eq!(config.data_folder, "glow/");
+        assert_eq!(config.data_folder, "glow");
     }
 
     #[test]

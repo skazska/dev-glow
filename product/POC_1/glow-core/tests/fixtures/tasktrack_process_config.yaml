@@ -1,146 +1,148 @@
-# TaskTrack Process Configuration
-# Based on POC_1/scenario/process_config.yaml
+# TaskTrack Process Configuration (updated for POC_1 schema)
 
-version: "1.0"
+version: "0.1.0"
 
-process:
-  id: "solo-dev-feature-development"
-  name: "Solo Developer Feature Development"
-  description: "A streamlined process for solo developers to implement features with AI assistance"
+classifications:
+  - id: type
+    name: "Step Type"
+    values:
+      - key: Feature
+        name: "Feature"
+      - key: Task
+        name: "Task"
+      - key: Process
+        name: "Process"
 
-step_templates:
-  task_default: |
-    # {{step.id}}: {{step.purpose}}
+parameter_types:
+  - id: FEATURE_ID
+    purpose: "Feature identifier"
+    data_type: STR
+    is_required: true
 
-    ## Context
-    {{#if parent}}
-    Parent: {{parent.id}} - {{parent.purpose}}
-    {{/if}}
+  - id: FEATURE_NAME
+    purpose: "Feature name"
+    data_type: STR
+    is_required: true
 
-    {{#if step.expectations}}
-    ## Expectations
-    {{step.expectations}}
-    {{/if}}
+  - id: FEATURE_DESCRIPTION
+    purpose: "Feature description"
+    data_type: CONTENT
 
-    ## Work Log
-    <!-- Record your progress here -->
+  - id: REQUIREMENTS_DOC
+    purpose: "Requirements documentation"
+    data_type: CONTENT
 
-    ## Output
-    <!-- Document outputs before marking complete -->
+  - id: ACCEPTANCE_CRITERIA
+    purpose: "Acceptance criteria"
+    data_type: SET
 
-steps:
-  - id: "ROOT"
-    classification: "Process"
-    purpose: "TaskTrack Development Process"
-    description: "Main entry point for TaskTrack project development"
-    own_steps:
-      - id: "FEAT"
-        repeatable: true
-        classification: "Process"
-        purpose: "Feature Development"
-        description: "Develop a single feature from requirements to testing"
-        scope:
-          - id: "FEATURE_ID"
-            data_type: "String"
-            required: true
-            description: "Unique identifier for the feature (e.g., 001)"
-          - id: "FEATURE_NAME"
-            data_type: "String"
-            required: true
-            description: "Human-readable feature name"
-          - id: "FEATURE_DESCRIPTION"
-            data_type: "String"
-            description: "Detailed description of the feature"
-        output:
-          - id: "RELEASE_NOTES"
-            data_type: "String"
-            description: "Release notes for the completed feature"
-        own_steps:
-          - id: "REQ"
-            repeatable: true
-            classification: "Task"
-            purpose: "Requirements Gathering"
-            description: "Gather and document requirements for the feature"
-            expectations: |
-              - Identify all user stories
-              - Define acceptance criteria
-              - Document edge cases
-            scope:
-              - id: "REQ_ID"
-                data_type: "String"
-            output:
-              - id: "REQUIREMENTS_DOC"
-                data_type: "String"
-                description: "Path to requirements document"
-              - id: "ACCEPTANCE_CRITERIA"
-                data_type: "Array"
-                description: "List of acceptance criteria"
+  - id: DESIGN_DOC
+    purpose: "Design documentation"
+    data_type: CONTENT
 
-          - id: "DESIGN"
-            repeatable: true
-            classification: "Task"
-            purpose: "Solution Design"
-            description: "Design the technical solution"
-            expectations: |
-              - Create system design document
-              - Define API contracts
-              - Document data models
-            link:
-              - source: "REQ"
-                type: "waits_for"
-                description: "Design requires requirements to be complete"
-            input:
-              - id: "REQUIREMENTS_DOC"
-                data_type: "String"
-                from: "REQ.REQUIREMENTS_DOC"
-            output:
-              - id: "DESIGN_DOC"
-                data_type: "String"
-              - id: "API_SPEC"
-                data_type: "String"
+  - id: API_SPEC
+    purpose: "API specification"
+    data_type: CONTENT
 
-          - id: "IMPL"
-            repeatable: true
-            classification: "Task"
-            purpose: "Implementation"
-            description: "Implement the designed solution"
-            expectations: |
-              - Write clean, documented code
-              - Follow coding standards
-              - Include unit tests
-            link:
-              - source: "DESIGN"
-                type: "waits_for"
-            input:
-              - id: "DESIGN_DOC"
-                data_type: "String"
-                from: "DESIGN.DESIGN_DOC"
-            output:
-              - id: "CODE_LOCATION"
-                data_type: "String"
-              - id: "COMMITS"
-                data_type: "Array"
+  - id: CODE_LOCATION
+    purpose: "Code location"
+    data_type: STR
 
-          - id: "TEST"
-            repeatable: true
-            classification: "Task"
-            purpose: "Testing and Validation"
-            description: "Test the implementation against requirements"
-            expectations: |
-              - Run all unit tests
-              - Perform integration testing
-              - Validate acceptance criteria
-            link:
-              - source: "IMPL"
-                type: "waits_for"
-            input:
-              - id: "CODE_LOCATION"
-                data_type: "String"
-                from: "IMPL.CODE_LOCATION"
-              - id: "ACCEPTANCE_CRITERIA"
-                data_type: "Array"
-                from: "REQ.ACCEPTANCE_CRITERIA"
-            output:
-              - id: "TEST_RESULTS"
-                data_type: "Object"
-                description: "Test execution results"
+  - id: TEST_RESULTS
+    purpose: "Test results"
+    data_type: STR
+
+  - id: RELEASE_NOTES
+    purpose: "Release notes"
+    data_type: CONTENT
+
+root_process:
+  id: ROOT
+  purpose: "TaskTrack Development Process"
+  expectations: "All features implemented and tested"
+
+  steps:
+    # Feature template - can have multiple instances (FEAT-001, FEAT-002, etc.)
+    - id: FEAT
+      purpose: "Feature Development"
+      classification: "Feature"
+      allow_iterations: true
+      scope:
+        - id: FEATURE_ID
+          type_ref: FEATURE_ID
+          is_required: true
+        - id: FEATURE_NAME
+          type_ref: FEATURE_NAME
+          is_required: true
+        - id: FEATURE_DESCRIPTION
+          type_ref: FEATURE_DESCRIPTION
+      outputs:
+        - id: RELEASE_NOTES
+          type_ref: RELEASE_NOTES
+
+      steps:
+        - id: REQ
+          purpose: "Requirements Gathering"
+          classification: "Task"
+          allow_iterations: true
+          expectations: "Requirements documented with acceptance criteria"
+          outputs:
+            - id: REQUIREMENTS_DOC
+              type_ref: REQUIREMENTS_DOC
+            - id: ACCEPTANCE_CRITERIA
+              type_ref: ACCEPTANCE_CRITERIA
+
+        - id: DESIGN
+          purpose: "Solution Design"
+          classification: "Task"
+          allow_iterations: true
+          expectations: "Design documented with API specification"
+          inputs:
+            - id: REQUIREMENTS_DOC
+              type_ref: REQUIREMENTS_DOC
+              mapping: "links.REQ.output.REQUIREMENTS_DOC"
+          outputs:
+            - id: DESIGN_DOC
+              type_ref: DESIGN_DOC
+            - id: API_SPEC
+              type_ref: API_SPEC
+
+        - id: IMPL
+          purpose: "Implementation"
+          classification: "Task"
+          allow_iterations: true
+          expectations: "Code implemented and tests written"
+          inputs:
+            - id: DESIGN_DOC
+              type_ref: DESIGN_DOC
+              mapping: "links.DESIGN.output.DESIGN_DOC"
+          outputs:
+            - id: CODE_LOCATION
+              type_ref: CODE_LOCATION
+
+        - id: TEST
+          purpose: "Testing and Validation"
+          classification: "Task"
+          allow_iterations: true
+          expectations: "All tests passing and acceptance criteria met"
+          inputs:
+            - id: CODE_LOCATION
+              type_ref: CODE_LOCATION
+              mapping: "links.IMPL.output.CODE_LOCATION"
+            - id: ACCEPTANCE_CRITERIA
+              type_ref: ACCEPTANCE_CRITERIA
+              mapping: "links.REQ.output.ACCEPTANCE_CRITERIA"
+          outputs:
+            - id: TEST_RESULTS
+              type_ref: TEST_RESULTS
+
+      links:
+        - type: dependency
+          from: DESIGN
+          to: REQ
+        - type: dependency
+          from: IMPL
+          to: DESIGN
+        - type: dependency
+          from: TEST
+          to: IMPL
