@@ -1,3 +1,6 @@
 {
-    "files.autoSave": "afterDelay"
+    "files.autoSave": "afterDelay",
+    "rust-analyzer.linkedProjects": [
+        "product/POC_1/Cargo.toml",
+    ]
 }
