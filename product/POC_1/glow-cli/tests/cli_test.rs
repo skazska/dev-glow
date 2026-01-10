@@ -26,18 +26,15 @@ glow_dir: "glow"
     // Write process config
     let process_config = r#"
 version: "1.0"
-process:
-  id: "simple"
-  name: "Simple Process"
 
-steps:
-  - id: "ROOT"
-    classification: "Process"
-    purpose: "Main process"
-    own_steps:
-      - id: "TASK"
-        classification: "Task"
-        purpose: "A simple task"
+root_process:
+  id: ROOT
+  purpose: "Main process"
+  classification: "Process"
+  steps:
+    - id: TASK
+      classification: "Task"
+      purpose: "A simple task"
 "#;
     fs::write(path.join(".glow/process_config.yaml"), process_config)
         .expect("Failed to write process config");
@@ -51,7 +48,7 @@ fn test_cli_help() {
     cmd.arg("--help")
         .assert()
         .success()
-        .stdout(predicate::str::contains("Development Process Management"));
+        .stdout(predicate::str::contains("dev-glow development process"));
 }
 
 #[test]
@@ -75,7 +72,7 @@ fn test_cli_init_step() {
         .stdout(predicate::str::contains("initialized"));
 
     // Verify step file was created
-    assert!(project.path().join("glow/ROOT.step.md").exists());
+    assert!(project.path().join("glow/ROOT.md").exists());
 }
 
 #[test]
@@ -84,14 +81,16 @@ fn test_cli_status() {
 
     // First init ROOT
     let mut init_cmd = Command::cargo_bin("glow").expect("Failed to find binary");
-    init_cmd.current_dir(project.path())
+    init_cmd
+        .current_dir(project.path())
         .args(["init", "ROOT"])
         .assert()
         .success();
 
     // Then check status
     let mut status_cmd = Command::cargo_bin("glow").expect("Failed to find binary");
-    status_cmd.current_dir(project.path())
+    status_cmd
+        .current_dir(project.path())
         .arg("status")
         .assert()
         .success()
@@ -104,14 +103,16 @@ fn test_cli_next() {
 
     // Init ROOT
     let mut init_cmd = Command::cargo_bin("glow").expect("Failed to find binary");
-    init_cmd.current_dir(project.path())
+    init_cmd
+        .current_dir(project.path())
         .args(["init", "ROOT"])
         .assert()
         .success();
 
     // Check next actions
     let mut next_cmd = Command::cargo_bin("glow").expect("Failed to find binary");
-    next_cmd.current_dir(project.path())
+    next_cmd
+        .current_dir(project.path())
         .arg("next")
         .assert()
         .success()
@@ -124,14 +125,16 @@ fn test_cli_progress() {
 
     // Init ROOT
     let mut init_cmd = Command::cargo_bin("glow").expect("Failed to find binary");
-    init_cmd.current_dir(project.path())
+    init_cmd
+        .current_dir(project.path())
         .args(["init", "ROOT"])
         .assert()
         .success();
 
     // Check progress
     let mut progress_cmd = Command::cargo_bin("glow").expect("Failed to find binary");
-    progress_cmd.current_dir(project.path())
+    progress_cmd
+        .current_dir(project.path())
         .arg("progress")
         .assert()
         .success()
@@ -144,14 +147,16 @@ fn test_cli_workflow() {
     let project_path = project.path();
 
     // Init ROOT
-    Command::cargo_bin("glow").unwrap()
+    Command::cargo_bin("glow")
+        .unwrap()
         .current_dir(project_path)
         .args(["init", "ROOT"])
         .assert()
         .success();
 
     // Start ROOT
-    Command::cargo_bin("glow").unwrap()
+    Command::cargo_bin("glow")
+        .unwrap()
         .current_dir(project_path)
         .args(["start", "ROOT"])
         .assert()
@@ -159,7 +164,8 @@ fn test_cli_workflow() {
         .stdout(predicate::str::contains("started"));
 
     // Show ROOT
-    Command::cargo_bin("glow").unwrap()
+    Command::cargo_bin("glow")
+        .unwrap()
         .current_dir(project_path)
         .args(["show", "ROOT"])
         .assert()
@@ -167,7 +173,8 @@ fn test_cli_workflow() {
         .stdout(predicate::str::contains("Step"));
 
     // Validate
-    Command::cargo_bin("glow").unwrap()
+    Command::cargo_bin("glow")
+        .unwrap()
         .current_dir(project_path)
         .arg("validate")
         .assert()
